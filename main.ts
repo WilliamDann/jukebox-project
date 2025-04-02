@@ -9,7 +9,7 @@ Env.getInstance();
 controllers()
 
 // use our custom error handling middleware
-//  for some reason this has to be used after controllers are important
+//  for some reason this has to be used after controllers are imported
 //  not really sure why this is, but it will break if it's before!
 Env.getInstance().app.use(errors)
 
