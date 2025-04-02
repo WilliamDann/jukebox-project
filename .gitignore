@@ -1,5 +1,16 @@
+# vscode files
+.vscode
+
+# node files
 package-lock.json
 node_modules/
+
+# output files
 bin/
+
+# secrets
 .env
+config.json
+
+# logs
 *.log
