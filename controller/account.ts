@@ -1,7 +1,7 @@
 import Env              from "../env";
 import requireFields    from '../util/requireFields';
 import Account          from '../model/Account';
-import Token            from "../model/Tokens";
+import Token            from "../model/Token";
 
 // account controller
 export default function() {

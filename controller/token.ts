@@ -1,6 +1,6 @@
 import Env from "../env";
 import Account from "../model/Account";
-import Token from "../model/Tokens";
+import Token from "../model/Token";
 import requireFields from "../util/requireFields";
 
 // token controller

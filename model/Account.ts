@@ -2,7 +2,7 @@ import { hashSync, compareSync, genSaltSync } from 'bcrypt'
 import {escape}                               from 'mysql'
 import queryAsync                             from '../util/queryAsync';
 import sqlSetString                           from '../util/sqlSetString';
-import Token from './Tokens';
+import Token from './Token';
 
 // user account information
 export default class Account {
