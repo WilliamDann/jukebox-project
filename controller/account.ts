@@ -5,8 +5,85 @@ import Token            from "../model/Token";
 
 // account controller
 export default function() {
+    /// Frontend routes
+
+    // create account page
+    Env.getInstance().app.get('/account/create', async (req, res) => {
+        res.render('account/create')
+    })
+
+    // view account page
+    Env.getInstance().app.get('/account/read', async (req, res) => {
+        // determine account id
+        let accountId = req.query.id;
+        if (!accountId) {
+            accountId = req.cookies.accountId;
+        } 
+        if (!accountId) {
+            res.render('base/error', { error: "Invalid account id : " + accountId });
+            return;
+        }
+
+        // find the account
+        let account = await Account.Read(accountId as any);
+        if (!account) {
+            res.render('base/error', { error: "Account not found" });
+            return;
+        }
+
+        // render the read page
+        res.render('account/read', { account: account.CleanObject() })
+    })
+
+    // udapte account page
+    Env.getInstance().app.get('/account/update', async (req, res) => {
+        // determine account id
+        let accountId = req.query.id;
+        if (!accountId) {
+            accountId = req.cookies.accountId;
+        } 
+        if (!accountId) {
+            res.render('base/error', { error: "Invalid account id : " + accountId });
+            return;
+        }
+
+        // find the account
+        let account = await Account.Read(accountId as any);
+        if (!account) {
+            res.render('base/error', { error: "Account not found" });
+            return;
+        }
+
+        // render the read page
+        res.render('account/update', { account: account.CleanObject() })
+    })
+
+    // delete account page
+    Env.getInstance().app.get('/account/delete', async (req, res) => {
+        // determine account id
+        let accountId = req.query.id;
+        if (!accountId) {
+            accountId = req.cookies.accountId;
+        } 
+        if (!accountId) {
+            res.render('base/error', { error: "Invalid account id : " + accountId });
+            return;
+        }
+
+        // find the account
+        let account = await Account.Read(accountId as any);
+        if (!account) {
+            res.render('base/error', { error: "Account not found" });
+            return;
+        }
+
+        // render the read page
+        res.render('account/delete', { account: account.CleanObject() })
+    })
+
+    /// API ROUTES
     // post route for user accounts
-    Env.getInstance().app.post('/api/account', async (req, res) => {
+    Env.getInstance().app.post('/api/account/create', async (req, res) => {
         // check required fields
         const missing = requireFields(req.body, [ 'email', 'password', 'displayName' ])
         if (missing.length != 0) {
@@ -36,7 +113,7 @@ export default function() {
     });
 
     // get route for user accounts
-    Env.getInstance().app.get('/api/account', async (req, res) => {
+    Env.getInstance().app.get('/api/account/read', async (req, res) => {
         const missing = requireFields(req.query, [ 'id' ])
         if (missing.length != 0) {
             res.status(400);
@@ -60,7 +137,7 @@ export default function() {
     });
 
     // update route for user accounts
-    Env.getInstance().app.put('/api/account', async (req, res) => {
+    Env.getInstance().app.post('/api/account/update', async (req, res) => {
         // check user token
         const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
         if (missing.length != 0) {
@@ -92,8 +169,8 @@ export default function() {
         // set new values
         if (req.body.displayName)
             account.DisplayName(req.body.displayName);
-        if (req.body.password)
-            account.Password(req.body.password);
+        // if (req.body.password)
+        //     account.Password(req.body.password);
         if (req.body.email)
             account.Email(req.body.email)
 
@@ -105,7 +182,7 @@ export default function() {
     });
 
     // delete route for user accounts
-    Env.getInstance().app.delete('/api/account', async (req, res) => {
+    Env.getInstance().app.post('/api/account/delete', async (req, res) => {
         // check user token
         const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
         if (missing.length != 0) {

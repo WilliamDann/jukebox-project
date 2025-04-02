@@ -1,0 +1,20 @@
+<%- include('../base/top') %>
+
+<h1>Update Account</h1>
+
+<form method="post" action="/api/account/update" enctype="application/x-www-form-urlencoded">
+    <label for="id">Id</label>
+    <input name="id" type="text" value="<%= account.id %>" readonly>
+
+    <label for="displayName">Display Name</label>
+    <input name="displayName" type="text" value="<%= account.displayName %>">
+
+    <label for="email">Email</label>
+    <input name="email" type="email" value="<%= account.email %>">
+
+    <input type="submit" value="Update Account">
+</form>
+
+<a href="#">Update Password</a>
+
+<%- include('../base/bottom') %>
