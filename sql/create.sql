@@ -10,3 +10,12 @@ create table if not exists accounts (
 
     primary key(id)
 );
+
+-- auth tokens for user sign-ins
+create table if not exists tokens (
+    token       varchar(255) unique not null,
+    accountId   int not null,
+
+    primary key(token),
+    foreign key(accountId) references accounts(id)
+)
