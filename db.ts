@@ -17,7 +17,7 @@ export default function(): Connection
     const connection = mysql.createConnection({
         host     : 'localhost',
         port     : 3306,
-        database : 'chessws',
+        database : 'jukeboxProject',
         user     : 'root',
         password : 'root',
         multipleStatements: true
