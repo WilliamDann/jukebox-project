@@ -1,9 +1,11 @@
-import express, { Application }    from 'express'
-import bodyParser from 'body-parser';
-import cookieParser from 'cookie-parser';
+import express, { Application } from 'express'
+import bodyParser               from 'body-parser';
+import cookieParser             from 'cookie-parser';
+import errors                   from './errors';
+
 
 // init the express app
-export default function(): Application{
+export default function(): Application {
     // create express app
     const app = express()
 
