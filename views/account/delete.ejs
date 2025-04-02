@@ -1,0 +1,19 @@
+<%- include('../base/top') %>
+
+<h1>Delete Account</h1>
+
+<h2>Are you sure you want to delete this account?</h2>
+<form method="post" action="/api/account/delete" enctype="application/x-www-form-urlencoded">
+    <label for="id">Id</label>
+    <input name="id" type="text" value="<%= account.id %>" readonly>
+
+    <label for="displayName">Display Name</label>
+    <input name="displayName" type="text" value="<%= account.displayName %>" readonly>
+
+    <label for="email">Email</label>
+    <input name="email" type="email" value="<%= account.email %>" readonly>
+
+    <input type="submit" value="Delete Account">
+</form>
+
+<%- include('../base/bottom') %>

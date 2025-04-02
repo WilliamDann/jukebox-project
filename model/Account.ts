@@ -9,7 +9,7 @@ export default class Account {
     id              !: number;
     email           !: string;
     passwordhash    !: string;
-    displayname     !: string;
+    displayName     !: string;
 
     private hashPassword(password: string)
     {
@@ -42,7 +42,7 @@ export default class Account {
     }
 
     public DisplayName(value: string): Account {
-        this.displayname = value;
+        this.displayName = value;
         return this;
     }
 
@@ -54,7 +54,7 @@ export default class Account {
             values(
                 ${escape(this.email)},
                 ${escape(this.passwordhash)},
-                ${escape(this.displayname)}
+                ${escape(this.displayName)}
             );
         `;
 
@@ -134,5 +134,12 @@ export default class Account {
     // determine if a given password is a match
     public async PasswordMatch(password: string): Promise<boolean> {
         return this.checkPassword(password, this.passwordhash)
+    }
+
+    // get a clean version of the data to send to a client
+    public CleanObject(): object {
+        let obj = Object.assign({}, this) as any;
+        delete obj.passwordHash
+        return obj;
     }
 }

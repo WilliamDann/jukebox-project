@@ -9,6 +9,9 @@ export default function(): Application{
 
     // middleware
 
+    // set ejs as the view engine
+    app.set('view engine', 'ejs');
+
     // static file serving
     //  icons, css, js, etc.
     app.use(express.static('./public'))

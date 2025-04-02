@@ -6,6 +6,12 @@ import requireFields from "../util/requireFields";
 // token controller
 export default function()
 {
+    /// Frontend Routes
+    Env.getInstance().app.get('/signin', async (req, res) => {
+        res.render('token/signin')
+    });
+
+    /// API Routes
     // handle user auth
     Env.getInstance().app.post('/api/auth', async (req, res) => {
         // ensure required fields are present
