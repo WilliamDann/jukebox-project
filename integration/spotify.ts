@@ -1,50 +1,61 @@
 import Env          from "../env";
 
 import querystring  from 'querystring'
-import http         from 'http'
+import https         from 'https'
 
 import { SpotifyAccessToken, SptoifyConfig } from "../config";
 
 async function requestAccessToken(config: SptoifyConfig): Promise<SpotifyAccessToken>
 {
     return new Promise((resolve, reject) => {
-        // create request body
-        const bodyData = querystring.stringify({
-            client_id: config.client_id,
-            client_secret: config.client_secret
-        });
-    
-        // create request info
-        const postOpts = {
-            host: 'accounts.spotify.com',
-            post: 80,
-            path: '/api/token',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+        // form data
+        let qs = querystring.stringify({
+            'grant_type': 'client_credentials',
+            'client_id': 'ca8578e86b9649159d0ca9aa5634c959',
+            'client_secret': 'f41118a8cc684bad86668f26053bda65'
+        })
+
+        // build request options
+        const options = {
+            "method": "POST",
+            "hostname": "accounts.spotify.com",
+            "port": null,
+            "path": "/api/token",
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Content-Length": Buffer.byteLength(qs)
             }
-        }
+        };
     
-        // create request and response handler
-        var req = http.request(postOpts, res => {
-            res.setEncoding('utf-8');
-            res.on('data', chunk => {
-                const data = JSON.parse(chunk);
-                if (!data) {
-                    reject(`invalid data from spotify: ${data}`);
-                    return;
+        // build request
+        const req = https.request(options, function (res) {
+            const chunks: any[] = [];
+          
+            res.on("data", function (chunk) {
+                chunks.push(chunk);
+            });
+          
+            res.on("end", function () {
+                const body = Buffer.concat(chunks);
+                const obj  = JSON.parse(body.toString())
+
+                const token = new SpotifyAccessToken();
+                Object.assign(token, obj)
+
+                if (res.statusCode != 200) {
+                    reject(token)
+                    return
                 }
-
-                resolve(data)
+                resolve(token)
             });
-            res.on('error', e => {
-                reject(e)
-            });
+    
+            res.on("error", reject)
         });
-
-        // send the request
-        console.log(bodyData)
-        req.write(bodyData);
+    
+        // send request
+        Env.getInstance().logger.info(qs)
+        req.write(qs);
+        req.end();
     })
 }
 
@@ -66,13 +77,13 @@ export default async function()
     try {
         const spotifyToken = await requestAccessToken(config.spotify);
         config.spotify.access_token = spotifyToken;
-        logger.info(spotifyToken)
+        logger.info(JSON.stringify(spotifyToken))
     } catch (e) {
-        logger.error(`Spotify Access token request failed ${e}`);
-        throw new Error(`Spotify Access token request failed ${e}`)
+        throw new Error(`Spotify Access token request failed ${JSON.stringify(e)}`);
     }
 
     // OK
     console.log("✔ Spotify integration started")
     logger.info("Spotify access token recived");
+    logger.info(config.spotify.access_token.access_token);
 }

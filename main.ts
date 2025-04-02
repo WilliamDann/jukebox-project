@@ -1,7 +1,7 @@
 import Env         from "./env";
 import controllers from './controller/all'
-import errors from "./errors";
-import spotify from "./integration/spotify";
+import errors      from "./errors";
+import spotify     from "./integration/spotify";
 
 // init 
 Env.getInstance();
