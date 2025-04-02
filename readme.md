@@ -5,7 +5,7 @@
 ```
 npm i
 ```
-3. install typescript
+1. install typescript
 ```
 npm i -g typescript
 tsc --version
@@ -16,9 +16,9 @@ This should output a version number for typescript
 4. Install MySql
 You will need to install mysql.
 
-6. Run the app
+6. Build & Run the app
 ```
-node main.js
+npm run start
 ```
 
 It should then be running on http://localhost:8080
