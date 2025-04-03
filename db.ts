@@ -11,15 +11,18 @@ export default function(): Connection
         console.error("! Could not load DB init script!")
     }
 
+    const configFile = readFileSync('./config.json');
+    const config     = JSON.parse(configFile.toString())
+
     // connect to local mysql database
     //  for development this is fine but when the app is released
     //  we will need a real db
     const connection = mysql.createConnection({
-        host     : 'localhost',
-        port     : 3306,
+        host     : config.mysql.host,
+        port     : config.mysql.port,
         database : 'jukeboxProject',
-        user     : 'root',
-        password : 'root',
+        user     : config.mysql.user,
+        password : config.mysql.password,
         multipleStatements: true
     });
     
