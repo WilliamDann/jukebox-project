@@ -1,10 +1,10 @@
-import { Application }  from 'express'
-import { Connection  }  from 'mysql'
-import app              from './app';
-import db               from './db';
-import { Logger }       from 'winston';
-import logger           from './logger';
-import config, { Config } from './config';
+import { Application }    from 'express'
+import { Connection  }    from 'mysql'
+import app                from './app';
+import db                 from './db';
+import { Logger }         from 'winston';
+import logger             from './logger';
+import SpotifyIntegration from './integration/spotify';
 
 // singelton instance for applicaiton enviroment
 //  this contains the express app, logger, etc.
@@ -24,15 +24,15 @@ export default class Env {
     // logger instance
     public logger: Logger
 
-    // integration config data
-    public config: Config
+    // spotify Integration
+    public spotify: SpotifyIntegration
 
     // inaccessable outside the class
     private constructor() {
-        this.logger = logger();
-        this.app    = app();
-        this.db     = db();
-        this.config = config();
+        this.logger  = logger();
+        this.app     = app();
+        this.db      = db();
+        this.spotify = new SpotifyIntegration();
     }
 
     // always returns the same instance of Env
