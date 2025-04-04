@@ -32,7 +32,8 @@ export default class SpotifyIntegration {
                 "path": endpoint,
                 "headers": {
                   "Content-Type": "application/x-www-form-urlencoded",
-                  "Content-Length": Buffer.byteLength(qs)
+                  "Content-Length": Buffer.byteLength(qs),
+                  "Authorization": 'Basic ' + (Buffer.from(this.config.client_id + ':' + this.config.client_secret).toString('base64'))
                 }
             };
     

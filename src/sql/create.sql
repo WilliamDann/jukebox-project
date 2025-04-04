@@ -8,7 +8,23 @@ create table if not exists accounts (
     passwordHash    varchar(255) not null,
     displayName     varchar(255) not null,
 
+    spotAuthCode    varchar(255),
+
     primary key(id)
+);
+
+-- spotify tokens
+create table if not exists spotTokens (
+    accountId       int not null,
+
+    access_token    varchar(255) not null unique,
+    refresh_token   varchar(255),
+
+    expires_in      int    not null,
+    `generated`     bigint not null,
+
+    primary key(access_token),
+    foreign key(accountId) references accounts(id)
 );
 
 -- auth tokens for user sign-ins
@@ -18,4 +34,4 @@ create table if not exists tokens (
 
     primary key(token),
     foreign key(accountId) references accounts(id)
-)
+);

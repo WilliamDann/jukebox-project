@@ -11,6 +11,8 @@ export default class Account {
     passwordhash    !: string;
     displayName     !: string;
 
+    spotAuthCode    !: string;
+
     private hashPassword(password: string)
     {
         return hashSync(password, genSaltSync(10));
