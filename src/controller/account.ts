@@ -18,16 +18,16 @@ export default function() {
         let accountId = req.query.id;
         if (!accountId) {
             accountId = req.cookies.accountId;
-        } 
+        }
         if (!accountId) {
-            res.render('base/error', { error: "Invalid account id : " + accountId });
+            res.render('base/redirect', { redirect: '/signin' })
             return;
         }
 
         // find the account
         let account = await Account.Read(accountId as any);
         if (!account) {
-            res.render('base/error', { error: "Account not found" });
+            res.render('base/redirect', { redirect: '/signin' })
             return;
         }
 
@@ -109,7 +109,7 @@ export default function() {
         account.Create();
 
         // OK
-        res.sendStatus(200);
+        res.render('base/redirect', { redirect: '/signin' })
     });
 
     // get route for user accounts
@@ -178,7 +178,7 @@ export default function() {
         account.Update();
 
         // OK
-        res.sendStatus(200);
+        res.render('base/redirect', { redirect: '/account/read?id=' + account.id })
     });
 
     // delete route for user accounts
@@ -219,6 +219,6 @@ export default function() {
         res.cookie('token', undefined);
         
         // OK
-        res.sendStatus(200);
+        res.render('base/redirect', { redirect: '/' })
     });
 }
