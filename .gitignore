@@ -11,6 +11,7 @@ bin/
 # secrets
 .env
 config.json
+spot.json
 
 # logs
 *.log
