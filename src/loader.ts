@@ -61,7 +61,7 @@ export default async function() {
     if (!await retryUntil(
         async () => {
             Env.getInstance().logger.info("trying to connect to spotify...")  
-            Env.getInstance().spotify.token = await spot.fetchToken();
+            Env.getInstance().spotify.init()
         },
         (): boolean => {
             if (Env.getInstance().db == null) {

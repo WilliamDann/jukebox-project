@@ -1,7 +1,8 @@
-import SpotifyConfig      from "./spotifyConfig";
-import SpotifyToken       from "./spotifyToken";
-import querystring        from 'querystring';
-import https              from 'https'
+import SpotifyConfig                    from "./spotifyConfig";
+import SpotifyToken                     from "./spotifyToken";
+import querystring                      from 'querystring';
+import https                            from 'https'
+import {writeFileSync, readFileSync}    from 'fs'
 
 // class to handle spotify requests
 export default class SpotifyIntegration {
@@ -60,6 +61,23 @@ export default class SpotifyIntegration {
         });
     }
 
+    // save a token to the file system
+    saveToken(path: string) {
+        if (!this.token) return;
+
+        writeFileSync(path, JSON.stringify(this.token))
+    }
+
+    // load a spotify token from  a file
+    loadToken(path: string): SpotifyToken|null {
+        try {
+            let data = readFileSync(path, 'utf-8');
+            return JSON.parse(data)
+        } catch (e) {
+            return null;
+        }
+    }
+
     // get spotify access token from spotify
     async fetchToken(): Promise<SpotifyToken> {
         // create request body
@@ -89,6 +107,18 @@ export default class SpotifyIntegration {
 
     // get the spotify token
     async init() {
+        let token = this.loadToken('spot.json')
+
+        // if token exists and has not expired use the token
+        if (token && (token.generated + token.expires_in*1000) > Date.now()) {
+
+            console.log('using stored spotify token')
+            this.token = token;
+            return;
+        }
+
+        // generate a new access token
         this.token = await this.fetchToken();
+        this.saveToken('spot.json');
     }
 }
