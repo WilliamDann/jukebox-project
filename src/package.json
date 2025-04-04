@@ -10,6 +10,7 @@
     "ejs": "^3.1.10",
     "express": "^5.0.1",
     "mysql": "^2.18.1",
+    "typescript": "^5.8.2",
     "winston": "^3.17.0"
   },
   "devDependencies": {
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "build": "echo Building... && tsc -p tsconfig.json",
-    "start"  : "npm run build && echo Running... && node bin/main.js"
+    "start": "npm run build && echo Running... && node bin/main.js"
   },
   "author": "",
   "license": "MIT"
