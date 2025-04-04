@@ -1,3 +1,4 @@
+name: jukebox-project
 services:
   web:
     build:
