@@ -50,6 +50,6 @@ export default function()
         res.cookie('token', token.token);
 
         // OK, send to user
-        res.json(token)
+        res.render('base/redirect', { redirect: '/account/read?id='+token.accountId })
     });
 }
