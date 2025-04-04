@@ -2,6 +2,9 @@ import Env         from "./env";
 import controllers from './controller/all'
 import errors      from "./errors";
 
+const host = '0.0.0.0'
+const port = 8080
+
 // init 
 Env.getInstance();
 
@@ -18,7 +21,7 @@ Env.getInstance().spotify.init();
 
 // start app
 Env.getInstance().logger.info("Starting server on http://localhost:8080")
-Env.getInstance().app.listen(8080, 'localhost', () => {
-    console.log("listening on http://localhost:8080")
-    Env.getInstance().logger.info("listening on http://localhost:8080")
+Env.getInstance().app.listen(port, host, () => {
+    console.log(`listening on http://${host}:${port}`)
+    Env.getInstance().logger.info(`listening on http://${host}:${port}`)
 })
