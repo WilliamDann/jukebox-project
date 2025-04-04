@@ -1,12 +1,14 @@
 import Env         from "./env";
 import controllers from './controller/all'
 import errors      from "./errors";
+import app from "./app";
+import loader from "./loader";
 
 const host = '0.0.0.0'
 const port = 8080
 
 // init 
-Env.getInstance();
+Env.getInstance().app = app();
 
 // register routes
 controllers()
@@ -16,12 +18,12 @@ controllers()
 //  not really sure why this is, but it will break if it's before!
 Env.getInstance().app.use(errors)
 
-// start spotify integration
-Env.getInstance().spotify.init();
-
-// start app
-Env.getInstance().logger.info("Starting server on http://localhost:8080")
-Env.getInstance().app.listen(port, host, () => {
-    console.log(`listening on http://${host}:${port}`)
-    Env.getInstance().logger.info(`listening on http://${host}:${port}`)
+// load components like DB and spotify, then start app
+loader().then(() => {
+    // start app
+    Env.getInstance().logger.info(`Starting server on http://${host}:${port}`)
+    Env.getInstance().app.listen(port, host, () => {
+        console.log(`listening on http://${host}:${port}`)
+        Env.getInstance().logger.info(`listening on http://${host}:${port}`)
+    })
 })

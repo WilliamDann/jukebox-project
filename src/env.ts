@@ -1,9 +1,6 @@
 import { Application }    from 'express'
 import { Connection  }    from 'mysql'
-import app                from './app';
-import db                 from './db';
 import { Logger }         from 'winston';
-import logger             from './logger';
 import SpotifyIntegration from './integration/spotify';
 
 // singelton instance for applicaiton enviroment
@@ -15,25 +12,20 @@ export default class Env {
     private static instance: Env
 
     // express.js application
-    public app: Application;
+    public app      !: Application;
     // mysql database connection
 
     // mysql database connection
-    public db : Connection;
+    public db       !: Connection;
 
     // logger instance
-    public logger: Logger
+    public logger   !: Logger
 
     // spotify Integration
-    public spotify: SpotifyIntegration
+    public spotify  !: SpotifyIntegration
 
     // inaccessable outside the class
-    private constructor() {
-        this.logger  = logger();
-        this.app     = app();
-        this.db      = db();
-        this.spotify = new SpotifyIntegration();
-    }
+    private constructor() { }
 
     // always returns the same instance of Env
     static getInstance() {
