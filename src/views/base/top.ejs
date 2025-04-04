@@ -3,7 +3,7 @@
 <html>
     <head>
         <title>Jukebox Project</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="/style.css">
     </head>
 
     <body>
@@ -12,6 +12,13 @@
             <div style="color: red">
                 <p>Error: </p>
                 <p><%= error %></p>
+            </div>
+        <% } %>
+
+        <% if(locals.message) { %>
+            <div style="color: blue">
+                <p>Message: </p>
+                <p><%= message %></p>
             </div>
         <% } %>
 

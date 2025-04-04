@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response }  from "express";
 import { MysqlError }                       from "mysql";
-import Env from "./env";
+import Env                                  from "./env";
 
 export default function(err: Error, req: Request, res: Response, next: NextFunction)
 {
@@ -8,7 +8,7 @@ export default function(err: Error, req: Request, res: Response, next: NextFunct
     {
         // if it's a mysql error
         Env.getInstance().logger.error(`SqlError: -  ${err.toString()}`);
-        res.render('page/error', { error: { title: "SQL Error", text: err.message } });
+        res.render('base/error', { error: err.message});
         return;
     } else 
     {
