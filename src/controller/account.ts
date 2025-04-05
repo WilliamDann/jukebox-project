@@ -93,11 +93,11 @@ export default function() {
         }
 
         // create account object
-        let account = new Account()
-            .Email(req.body.email)
-            .Password(req.body.password)
-            .DisplayName(req.body.displayName)
-        
+        let account          = new Account()
+        account.email        = req.body.email;
+        account.passwordhash = account.hashPassword(req.body.password)
+        account.displayName  = req.body.displayName;
+
         // if we already have an account for this user, fail
         if (await account.Exists()) {
             res.status(400);
@@ -168,11 +168,11 @@ export default function() {
 
         // set new values
         if (req.body.displayName)
-            account.DisplayName(req.body.displayName);
+            account.displayName = req.body.displayName;
         // if (req.body.password)
         //     account.Password(req.body.password);
         if (req.body.email)
-            account.Email(req.body.email)
+            account.email = req.body.email
 
         // update in db
         account.Update();

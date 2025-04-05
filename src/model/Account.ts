@@ -13,39 +13,14 @@ export default class Account {
 
     spotAuthCode    !: string;
 
-    private hashPassword(password: string)
+    hashPassword(password: string)
     {
         return hashSync(password, genSaltSync(10));
     }
 
-    private checkPassword(plainText: string, hashed: string)
+    checkPassword(plainText: string, hashed: string)
     {
         return compareSync(plainText, hashed);
-    }
-
-    public Id(value: number): Account {
-        this.id = value;
-        return this;
-    }
-
-    public Email(value: string): Account {
-        this.email = value;
-        return this;
-    }
-
-    public Password(value: string): Account {
-        this.passwordhash = this.hashPassword(value)
-        return this;
-    }
-
-    public PasswordHash(value: string): Account {
-        this.passwordhash = value;
-        return this;
-    }
-
-    public DisplayName(value: string): Account {
-        this.displayName = value;
-        return this;
     }
 
     // create in the db
@@ -75,11 +50,7 @@ export default class Account {
         }
 
         // return new account object 
-        return new Account()
-            .Id(data[0].id)
-            .Email(data[0].email)
-            .PasswordHash(data[0].passwordhash)
-            .DisplayName(data[0].displayName)
+        return Object.assign(new Account(), data[0])
     }
 
     // get an account by it's email
@@ -92,11 +63,7 @@ export default class Account {
         }
 
         // return new account object 
-        return new Account()
-            .Id(data[0].id)
-            .Email(data[0].email)
-            .PasswordHash(data[0].passwordHash)
-            .DisplayName(data[0].displayName)
+        return Object.assign(new Account(), data[0])
     }
 
     // update in the db
