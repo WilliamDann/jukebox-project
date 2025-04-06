@@ -1,0 +1,12 @@
+<%- include('../base/top') %>
+
+<h1>Create Jukebox</h1>
+
+<form method="post" action="/api/jukebox/create" enctype="application/x-www-form-urlencoded">
+    <label for="displayName">Display Name</label>
+    <input name="displayName" type="text"><br>
+
+    <input type="submit" value="Create Jukebox">
+</form>
+
+<%- include('../base/bottom') %>

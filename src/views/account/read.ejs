@@ -11,13 +11,6 @@
 <b>Email</b>
 <p><%= account.email %></p>
 
-<% if (account.spotAuthCode) { %>
-    <p style="color: green">Account Linked with Spotify</p>
-<% } else { %>
-    <p>To have access to the app's features your spotify account must be linked</p>
-    <a href="/account/link">Link Spotify Account</a>
-<% } %><br><br>
-
 <a href="/account/update?id=<%= account.id %>">Update</a>
 <a href="/account/delete?id=<%= account.id %>">Delete</a>
 

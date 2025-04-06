@@ -1,0 +1,15 @@
+<%- include('../base/top') %>
+
+<h1>Update Jukebox</h1>
+
+<form method="post" action="/api/jukebox/update" enctype="application/x-www-form-urlencoded">
+    <label for="id">Id</label>
+    <input name="id" type="text" value="<%= jukebox.id %>" readonly>
+
+    <label for="displayName">Display Name</label>
+    <input name="displayName" type="text" value="<%= jukebox.displayName %>">
+
+    <input type="submit" value="Update Jukebox">
+</form>
+
+<%- include('../base/bottom') %>

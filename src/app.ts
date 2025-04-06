@@ -2,6 +2,7 @@ import express, { Application } from 'express'
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
 import errors                   from './errors';
+import auth from './auth';
 
 
 // init the express app
@@ -20,6 +21,9 @@ export default function(): Application {
 
     // so that express parses cookies correctly
     app.use(cookieParser())
+
+    // auth middleware to validate user tokens
+    app.use(auth)
 
     // so that express parses url encoded form data correctly
     app.use(bodyParser.urlencoded({ extended: true }))
