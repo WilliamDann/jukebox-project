@@ -1,0 +1,11 @@
+<%- include('../base/top') %>
+
+<h1>My Jukeboxes</h1>
+
+<% for (let jukebox of jukeboxes) { %>
+    <%- include('./partial', { jukebox: jukebox }) %>
+<% } %>
+
+<a href="/jukebox/create">New Jukebox</a>
+
+<%- include('../base/bottom') %>

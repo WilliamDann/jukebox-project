@@ -2,7 +2,7 @@ import { escape } from "mysql";
 import queryAsync from "../util/queryAsync";
 
 export default class SpotifyAccessToken {
-    accountId       !: number;
+    jukeboxId       !: number;
 
     access_token    !: string;
     refresh_token   !: string;
@@ -13,9 +13,9 @@ export default class SpotifyAccessToken {
     // create in db
     async Create() {
         const query = `insert into 
-            spotTokens(accountId, access_token, refresh_token, expires_in, \`generated\`)
+            spotTokens(jukeboxId, access_token, refresh_token, expires_in, \`generated\`)
             values(
-                ${escape(this.accountId)},
+                ${escape(this.jukeboxId)},
                 ${escape(this.access_token)},
                 ${escape(this.refresh_token)},
                 ${escape(this.expires_in)},
@@ -39,8 +39,8 @@ export default class SpotifyAccessToken {
     }
 
     // get tokens for a user
-    static async ReadAccount(accountId: number): Promise<SpotifyAccessToken[]> {
-        const query = `select * from spotTokens where accountId=${escape(accountId)}`;
+    static async ReadJukebox(jukeboxId: number): Promise<SpotifyAccessToken[]> {
+        const query = `select * from spotTokens where jukeboxId=${escape(jukeboxId)}`;
         const data  = await queryAsync(query);
 
         if (!data || data.length == 0) {
@@ -50,7 +50,7 @@ export default class SpotifyAccessToken {
         // return data from server
         let tokens: SpotifyAccessToken[] = [];
         for (let token of data) {
-            Object.assign(new SpotifyAccessToken(), token);
+            tokens.push(Object.assign(new SpotifyAccessToken(), token));
         }
         return tokens;
     }

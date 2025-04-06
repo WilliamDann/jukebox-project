@@ -38,12 +38,9 @@ export default function() {
     // udapte account page
     Env.getInstance().app.get('/account/update', async (req, res) => {
         // determine account id
-        let accountId = req.query.id;
+        let accountId = req.cookies.id;
         if (!accountId) {
-            accountId = req.cookies.accountId;
-        } 
-        if (!accountId) {
-            res.render('base/error', { error: "Invalid account id : " + accountId });
+            res.render('base/error', { error: "Invalid account id" });
             return;
         }
 
@@ -61,12 +58,9 @@ export default function() {
     // delete account page
     Env.getInstance().app.get('/account/delete', async (req, res) => {
         // determine account id
-        let accountId = req.query.id;
+        let accountId = req.cookies.id;
         if (!accountId) {
-            accountId = req.cookies.accountId;
-        } 
-        if (!accountId) {
-            res.render('base/error', { error: "Invalid account id : " + accountId });
+            res.render('base/error', { error: "Invalid account id" });
             return;
         }
 
@@ -95,7 +89,7 @@ export default function() {
         // create account object
         let account          = new Account()
         account.email        = req.body.email;
-        account.passwordhash = account.hashPassword(req.body.password)
+        account.passwordHash = account.hashPassword(req.body.password)
         account.displayName  = req.body.displayName;
 
         // if we already have an account for this user, fail
@@ -138,39 +132,21 @@ export default function() {
 
     // update route for user accounts
     Env.getInstance().app.post('/api/account/update', async (req, res) => {
-        // check user token
+        // ensure user is signed in
         const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
-        if (missing.length != 0) {
-            res.status(400);
-            res.send("You are missing " + JSON.stringify(missing) + " from the request body");
-            return;
-        }
-
-        // check if the token exists
-        const token = await Token.Read(req.cookies.token);
-        if (token == null) {
-            res.sendStatus(403); // forbidden
-            return;
-        }
-
-        // check if the token is for the user trying to use it
-        if (!token.Check(req.cookies.accountId)) {
-            res.sendStatus(403); // forbidden
-            return;
-        }
+        if (missing.length != 0) 
+                return res.redirect('/signin')
 
         // get the user to update
         const account = await Account.Read(req.cookies.accountId);
         if (account == null) {
-            res.sendStatus(404); // not found
+            res.sendStatus(404); // not found. because of auth middleware we should not be able to get here.
             return;
         }
 
         // set new values
         if (req.body.displayName)
             account.displayName = req.body.displayName;
-        // if (req.body.password)
-        //     account.Password(req.body.password);
         if (req.body.email)
             account.email = req.body.email
 
@@ -185,24 +161,8 @@ export default function() {
     Env.getInstance().app.post('/api/account/delete', async (req, res) => {
         // check user token
         const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
-        if (missing.length != 0) {
-            res.status(400);
-            res.send("You are missing " + JSON.stringify(missing) + " from the request body");
-            return;
-        }
-
-        // check if the token exists
-        const token = await Token.Read(req.cookies.token);
-        if (token == null) {
-            res.sendStatus(403); // forbidden
-            return;
-        }
-
-        // check if the token is for the user trying to use it
-        if (!token.Check(req.cookies.accountId)) {
-            res.sendStatus(403); // forbidden
-            return;
-        }
+        if (missing.length != 0)
+            return res.redirect('/signin');
 
         // get the user to update
         const account = await Account.Read(req.cookies.accountId);

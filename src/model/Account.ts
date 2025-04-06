@@ -8,7 +8,7 @@ import Token from './Token';
 export default class Account {
     id              !: number;
     email           !: string;
-    passwordhash    !: string;
+    passwordHash    !: string;
     displayName     !: string;
 
     spotAuthCode    !: string;
@@ -30,7 +30,7 @@ export default class Account {
                 (email, passwordHash, displayName)
             values(
                 ${escape(this.email)},
-                ${escape(this.passwordhash)},
+                ${escape(this.passwordHash)},
                 ${escape(this.displayName)}
             );
         `;
@@ -102,7 +102,7 @@ export default class Account {
 
     // determine if a given password is a match
     public async PasswordMatch(password: string): Promise<boolean> {
-        return this.checkPassword(password, this.passwordhash)
+        return this.checkPassword(password, this.passwordHash)
     }
 
     // get a clean version of the data to send to a client
