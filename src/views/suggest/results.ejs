@@ -1,7 +1,7 @@
 <%- include('../base/top') %>
 
 <% for (let item of items) { %>
-    <%- include('./partial', { item: item }); %>
+    <%- include('./partial', { suggestTo: suggestTo, item: item }); %>
 <% } %>
 
 <%- include('../base/bottom') %>

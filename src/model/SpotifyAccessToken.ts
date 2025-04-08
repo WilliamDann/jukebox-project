@@ -25,7 +25,7 @@ export default class SpotifyAccessToken
     static async readProfile(profileId: number): Promise<SpotifyAccessToken[]>
     {
         // query data
-        const data = await queryAsync(`select * from spotifyAccessTokens where profileId=${escape(profileId)}`);
+        const data = await queryAsync(`select * from spotifyAccessTokens where profileId=${escape(profileId)} order by generatedAt asc;`);
         if (!data || data.length == 0)
             return [];
 

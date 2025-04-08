@@ -1,7 +1,8 @@
 import Env                  from "../env";
 import AppError             from "../error/AppError";
-import InvalidRequestError from "../error/InvalidRequestError";
+import InvalidRequestError  from "../error/InvalidRequestError";
 import PermissionError      from "../error/PermissionError";
+import Account              from "../model/Account";
 import Profile              from "../model/Profile";
 import SpotifyAccessToken   from "../model/SpotifyAccessToken";
 import { getAuthedAccount } from "./account";
@@ -13,13 +14,18 @@ export default function()
     const app = Env.getInstance().app;
     const db  = Env.getInstance().db;
 
+    // start of the song suggestion flow
+    //  search -> results -> suggest
     app.get('/search', async (req, res) => {
-        res.render('suggest/search');
+        const suggestTo = req.query.suggestTo;
+
+        res.render('suggest/search', { suggestTo: suggestTo });
     });
 
-    // route to begin song search flow
+    // results from the song search page
     app.get('/results', async (req, res) => {
-        const search = req.query.search;
+        const suggestTo = req.query.suggestTo; 
+        const search    = req.query.search;
         if (!search) 
             throw new InvalidRequestError('invalid search query provided');
 
@@ -39,7 +45,42 @@ export default function()
         }
         data = JSON.parse(data);
 
-        res.render('suggest/results', { items: data.tracks.items })
+        res.render('suggest/results', { suggestTo: suggestTo, items: data.tracks.items })
+    });
+
+    // the end of the song suggest flow. This should enqueue the song into the connected queue
+    app.get('/suggest', async (req, res) => {
+        const uri       = req.query.uri;
+        const suggestTo = req.query.suggestTo;
+        
+        if (!uri)
+            throw new InvalidRequestError(`Missing suggestion uri`);
+        if (!suggestTo)
+            throw new InvalidRequestError(`Missing id to suggest to`);
+
+        const account = await Account.read(suggestTo as any);
+        if (!account)
+            throw new InvalidRequestError(`Invalid account id`);
+
+        // TODO only add to active accounts
+        //  this is just to make it work!
+        const profiles = await Profile.readAccount(account.id);
+        if (profiles.length == 0)
+            throw new InvalidRequestError(`No profiles on account`)
+
+        // get auth token from profile
+        const tokens = await SpotifyAccessToken.readProfile(profiles[0].id);
+        if (tokens.length == 0)
+            throw new InvalidRequestError('Active Profile not linked');
+
+        const token = tokens[0].access_token;
+
+        // build request
+        const url = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
+        await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, token)
+
+        // OK
+        res.render('suggest/done')
     });
 
     // route to begin spotify account link flow
