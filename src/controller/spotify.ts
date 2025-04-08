@@ -1,5 +1,6 @@
 import Env                  from "../env";
 import AppError             from "../error/AppError";
+import InvalidRequestError from "../error/InvalidRequestError";
 import PermissionError      from "../error/PermissionError";
 import Profile              from "../model/Profile";
 import SpotifyAccessToken   from "../model/SpotifyAccessToken";
@@ -11,6 +12,35 @@ export default function()
 {
     const app = Env.getInstance().app;
     const db  = Env.getInstance().db;
+
+    app.get('/search', async (req, res) => {
+        res.render('suggest/search');
+    });
+
+    // route to begin song search flow
+    app.get('/results', async (req, res) => {
+        const search = req.query.search;
+        if (!search) 
+            throw new InvalidRequestError('invalid search query provided');
+
+        // build request data
+        const url = '/v1/search?'+querystring.encode({
+            q: search as string,
+            type: 'track'
+        });
+
+
+        // send request
+        let data: any = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'GET', null, true);
+        if (!data)
+        {
+            Env.getInstance().logger.error(data);
+            throw new AppError("Spotify Error", "Invalid data returned from search");
+        }
+        data = JSON.parse(data);
+
+        res.render('suggest/results', { items: data.tracks.items })
+    });
 
     // route to begin spotify account link flow
     app.get('/profile/link', async(req, res) => {
