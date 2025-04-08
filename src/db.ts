@@ -21,7 +21,6 @@ export default function(): Promise<Connection|null>
         const connection = mysql.createConnection({
             host     : config.mysql.host,
             port     : config.mysql.port,
-            database : 'jukeboxdb',
             user     : config.mysql.user,
             password : config.mysql.password,
             multipleStatements: true
