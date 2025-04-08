@@ -117,7 +117,7 @@ export default function() {
 
     // handle form submission from account update page
     app.post('/account/update', async (req, res) => {
-        const missing = requireFields(req.body, [ 'id', 'email', 'displayName', 'password' ]);
+        const missing = requireFields(req.body, [ 'id' ]);
         if (missing.length != 0)
             throw new InvalidRequestError(`missing ${JSON.stringify(missing)} from request body`);
     
