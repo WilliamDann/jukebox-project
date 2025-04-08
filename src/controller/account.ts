@@ -112,7 +112,7 @@ export default function() {
         await account.create();
 
         // show user signin page
-        res.render('/auth', { message: 'User account created.' });
+        res.redirect('/auth');
     });
 
     // handle form submission from account update page
