@@ -72,7 +72,7 @@ export default function() {
         }
 
         // render account pgae
-        res.render('account/read', { account: account.cleanObj() });
+        res.render('account/read', { account: account.cleanObject() });
     });
 
     // render update page
@@ -80,14 +80,14 @@ export default function() {
         const account = await getAccount(req);
 
         // render update page
-        res.render('account/update', { account: account.cleanObj() });
+        res.render('account/update', { account: account.cleanObject() });
     });
 
     // render delete page
     app.get('/account/delete', async (req, res) => {
         const account = await getAccount(req);
         
-        res.render('account/update', { account: account.cleanObj() });
+        res.render('account/update', { account: account.cleanObject() });
     });
 
     /// Backend routes

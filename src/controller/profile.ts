@@ -28,7 +28,7 @@ export default function()
         const account  = await getAuthedAccount(req);
         const profiles = await Profile.readAccount(account.id);
         
-        res.render('profile/list', { account: account.cleanObj(), profiles: profiles.map(x => x.cleanObject()) });
+        res.render('profile/list', { account: account.cleanObject(), profiles: profiles.map(x => x.cleanObject()) });
     });
     
     // read page for profile data
@@ -41,7 +41,7 @@ export default function()
     // create page for profile data
     app.get('/profile/create', async (req, res) => {
         const account  = await getAccount(req);
-        res.render('profile/create', { account: account.cleanObj() });
+        res.render('profile/create', { account: account.cleanObject() });
     })
 
     // update page for profile data
