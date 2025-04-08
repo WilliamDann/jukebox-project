@@ -9,7 +9,10 @@ import requireFields                                from "../util/requireFields"
 // get the current profile from request data
 export async function getProfile(req: Request): Promise<Profile>
 {
-    const id = req.query.profileId as any;
+    let id = req.query.profileId as any;
+    if (!id) {
+        id = req.body.profileId;
+    }
     const profile = await Profile.read(id);
 
     if (!profile) 
@@ -28,7 +31,7 @@ export default function()
         const account  = await getAuthedAccount(req);
         const profiles = await Profile.readAccount(account.id);
         
-        res.render('profile/list', { account: account.cleanObj(), profiles: profiles.map(x => x.cleanObject()) });
+        res.render('profile/list', { account: account.cleanObject(), profiles: profiles.map(x => x.cleanObject()) });
     });
     
     // read page for profile data
@@ -41,7 +44,7 @@ export default function()
     // create page for profile data
     app.get('/profile/create', async (req, res) => {
         const account  = await getAccount(req);
-        res.render('profile/create', { account: account.cleanObj() });
+        res.render('profile/create', { account: account.cleanObject() });
     })
 
     // update page for profile data
@@ -51,7 +54,7 @@ export default function()
     });
 
     // delete page for profile data
-    app.delete('profile/delete', async (req, res) => {
+    app.get('/profile/delete', async (req, res) => {
         const profile = await getProfile(req);
         res.render('profile/delete', { profile: profile.cleanObject() });
     });
@@ -99,7 +102,7 @@ export default function()
         await profile.update();
 
         // show user new profile info
-        res.redirect('/profile/read?id=' + profile.id);
+        res.redirect('/profile/read?profileId=' + profile.id);
     });
 
     // route to handle delete profile form
