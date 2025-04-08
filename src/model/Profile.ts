@@ -1,6 +1,8 @@
 import { escape, Query }    from "mysql"
 import queryAsync           from "../util/queryAsync"
 import sqlSetString         from "../util/sqlSetString"
+import SpotifyAccessToken   from "./SpotifyAccessToken"
+import Env from "../env"
 
 export default class Profile
 {
@@ -43,19 +45,27 @@ export default class Profile
 
     async update(): Promise<Query>
     {
-        const result = await queryAsync(`update profiles set ${sqlSetString(this)}where id=${escape(this.id)}`);
+        const result = await queryAsync(`update profiles ${sqlSetString(this)} where id=${escape(this.id)}`);
         return result;
     }
 
     async delete(): Promise<Query>
     {
+        // remove spotify access tokens associated with this profile
+        for (let token of await SpotifyAccessToken.readProfile(this.id))
+            token.delete();
+
         const result = await queryAsync(`delete from profiles where id=${escape(this.id)}`);
         return result;
     }
 
     cleanObject() {
         const copy = Object.assign({}, this) as any;
-        delete copy.spotAuthToken;
+        if (copy.spotAuthToken) {
+            copy.spotAuthToken = true;
+        } else {
+            copy.spotAuthToken = false;
+        }
         return copy;
     }
 }

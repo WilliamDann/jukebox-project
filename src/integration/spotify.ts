@@ -21,7 +21,7 @@ export default class SpotifyIntegration {
     // make a request to spotify
     //  returns string data from request
     //  this could be improved a lot! A library could do this, probably
-    request(fromdata: any, endpoint: string, hostname: string, method: string = "POST", port: number|null = null): Promise<string> {
+    request(fromdata: any, endpoint: string, hostname: string, method: string = "POST", port: number|null = null, useToken: string|boolean = false): Promise<string> {
         return new Promise((resolve, reject) => {
             // form data
             const qs      = querystring.stringify(fromdata);
@@ -37,9 +37,23 @@ export default class SpotifyIntegration {
                 }
             };
     
+            // use the token required for the request
+            if (useToken)
+            {
+                if (useToken === true)
+                {
+                    options.headers.Authorization = `Bearer ${this.token?.access_token}`
+                } else {
+                    options.headers.Authorization = `Bearer ${useToken}`
+                }
+            }
+
+            console.log(options.headers.Authorization)
+
             // build request
             const req = https.request(options, function (res) {
                 const chunks: any[] = [];
+                console.log(res.statusCode)
               
                 res.on("data", function (chunk) {
                     chunks.push(chunk);
