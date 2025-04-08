@@ -48,8 +48,6 @@ export default class SpotifyIntegration {
                 }
             }
 
-            console.log(options.headers.Authorization)
-
             // build request
             const req = https.request(options, function (res) {
                 const chunks: any[] = [];

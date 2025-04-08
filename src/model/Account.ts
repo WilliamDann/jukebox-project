@@ -92,7 +92,7 @@ export default class Account {
     }
 
     // remove sensitive info from the object
-    cleanObj(): any {
+    cleanObject(): any {
         const cpy = Object.assign({}, this) as any;
         delete cpy.passwordHash;
         return cpy;

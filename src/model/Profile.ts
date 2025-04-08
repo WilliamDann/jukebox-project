@@ -53,7 +53,7 @@ export default class Profile
     {
         // remove spotify access tokens associated with this profile
         for (let token of await SpotifyAccessToken.readProfile(this.id))
-            token.delete();
+            await token.delete();
 
         const result = await queryAsync(`delete from profiles where id=${escape(this.id)}`);
         return result;

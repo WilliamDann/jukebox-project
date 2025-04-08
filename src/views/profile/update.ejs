@@ -4,8 +4,8 @@
 
 <form method="post" action="/profile/update" enctype="application/x-www-form-urlencoded">
     <label for="displayName">Display Name</label>
-    <input type="text" name="displayName">
-    <input type="hidden" name="accountId" value="<%= profile.accountId %>" readonly>
+    <input type="text" name="displayName" value="<%= profile.displayName %>">
+    <input type="hidden" name="profileId" value="<%= profile.id %>" readonly>
     <input type="submit" value="Update"> 
 </form>
 
