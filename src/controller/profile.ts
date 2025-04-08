@@ -51,7 +51,7 @@ export default function()
     });
 
     // delete page for profile data
-    app.delete('profile/delete', async (req, res) => {
+    app.delete('/profile/delete', async (req, res) => {
         const profile = await getProfile(req);
         res.render('profile/delete', { profile: profile.cleanObject() });
     });
