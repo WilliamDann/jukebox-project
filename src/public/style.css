@@ -63,8 +63,8 @@ h1{
     font-size: 41px;
     font-weight: 600;
     font-family: 'Poppins', sans-serif;
-    background: -webkit-linear-gradient(right, #05b840, #9f01ea, #05b840, #9f01ea);
-    /*background: black;*/
+    /* background: -webkit-linear-gradient(right, #05b840, #9f01ea, #05b840, #9f01ea); */
+    background: black;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 30px;

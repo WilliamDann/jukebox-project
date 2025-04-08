@@ -1,12 +1,22 @@
 <%- include('../base/top') %>
 
-<h1>Update Profile</h1>
+<div class="container">
+    <h1>Update Profile</h1>
+    <form method="post" action="/profile/update" enctype="application/x-www-form-urlencoded">
+        <label for="displayName">Display Name</label>
+        <div class="input-data">
+            <input type="text" name="displayName" value="<%= profile.displayName %>">
+            <input type="hidden" name="profileId" value="<%= profile.id %>" readonly>    
+        </div>
+        
+        <div class="input-data">
+            <input type="submit" value="Update" > 
+        </div> 
+    </form>
+</div>
 
-<form method="post" action="/profile/update" enctype="application/x-www-form-urlencoded">
-    <label for="displayName">Display Name</label>
-    <input type="text" name="displayName" value="<%= profile.displayName %>">
-    <input type="hidden" name="profileId" value="<%= profile.id %>" readonly>
-    <input type="submit" value="Update"> 
-</form>
+
+
+
 
 <%- include('../base/bottom') %>
