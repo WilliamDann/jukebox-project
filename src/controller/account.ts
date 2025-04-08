@@ -87,7 +87,7 @@ export default function() {
     app.get('/account/delete', async (req, res) => {
         const account = await getAccount(req);
         
-        res.render('account/update', { account: account.cleanObject() });
+        res.redirect('/');
     });
 
     /// Backend routes

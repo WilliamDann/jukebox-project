@@ -9,7 +9,10 @@ import requireFields                                from "../util/requireFields"
 // get the current profile from request data
 export async function getProfile(req: Request): Promise<Profile>
 {
-    const id = req.query.profileId as any;
+    let id = req.query.profileId as any;
+    if (!id) {
+        id = req.body.profileId;
+    }
     const profile = await Profile.read(id);
 
     if (!profile) 
