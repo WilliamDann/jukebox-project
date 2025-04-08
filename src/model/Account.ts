@@ -2,6 +2,8 @@ import { escape, Query }                        from "mysql"
 import queryAsync                               from "../util/queryAsync"
 import { genSaltSync, hashSync, compareSync }   from "bcrypt"
 import sqlSetString                             from "../util/sqlSetString"
+import AccessToken                              from "./AccessToken"
+import Profile                                  from "./Profile"
 
 export default class Account {
     id           !: number
@@ -69,12 +71,22 @@ export default class Account {
     // update this object in the db
     async update(): Promise<Query>
     {
-        const result = await queryAsync(`update accounts set ${sqlSetString(this)}where id=${escape(this.id)}`);
+        const result = await queryAsync(`update accounts ${sqlSetString(this)} where id=${escape(this.id)}`);
         return result;
     }
 
+    // delete this object in the db
     async delete(): Promise<Query>
     {
+        // remove sign in tokens associated with this account
+        for (let token of await AccessToken.readAccount(this.id))
+            token.delete();
+
+        // remove profiles assocated with this account
+        for (let account of await Profile.readAccount(this.id))
+            account.delete();
+
+        // remove the accoutn
         const result = await queryAsync(`delete from accounts where id=${escape(this.id)}`);
         return result;
     }

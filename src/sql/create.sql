@@ -34,4 +34,21 @@ create table if not exists profiles (
 
     primary key(id),
     foreign key(accountId) references accounts(id)       
+);
+
+-- a spotify access token is what allows us to take actions on a user's behalf
+--  there are generated when we need then and they expire after some time
+create table if not exists spotifyAccessTokens (
+    -- info returned by spotify
+    access_token         varchar(255) not null,
+    refresh_token        varchar(255) not null,
+    expires_in           int not null,
+    scope                varchar(255) not null,
+
+    -- our info
+    profileId           int not null,
+    generatedAt         bigint not null,
+
+    primary key(access_token),
+    foreign key(profileId) references profiles(id)
 )
