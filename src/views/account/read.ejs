@@ -1,17 +1,22 @@
 <%- include('../base/top') %>
 
-<h1>Account Information</h1>
 
-<b>Id</b>
-<p><%= account.id %></p>
 
-<b>Display Name</b>
-<p><%= account.displayName %></p>
+<div class="container">
+    <h1>Account Information</h1>
 
-<b>Email</b>
-<p><%= account.email %></p>
+    <b>Id</b>
+    <p><%= account.id %></p>
 
-<a href="/account/update?id=<%= account.id %>">Update</a>
-<a href="/account/delete?id=<%= account.id %>">Delete</a>
+    <b>Display Name</b>
+    <p><%= account.displayName %></p>
+
+    <b>Email</b>
+    <p><%= account.email %></p>
+
+    <a href="/account/update?id=<%= account.id %>">Update</a>
+    <a href="/account/delete?id=<%= account.id %>">Delete</a>
+</div>
+
 
 <%- include('../base/bottom') %>
