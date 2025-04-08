@@ -102,7 +102,7 @@ export default function()
         await profile.update();
 
         // show user new profile info
-        res.redirect('/profile/read?id=' + profile.id);
+        res.redirect('/profile/read?profileId=' + profile.id);
     });
 
     // route to handle delete profile form
