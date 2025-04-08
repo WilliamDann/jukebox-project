@@ -1,0 +1,10 @@
+<%- include('../base/top') %>
+
+<% // render partial for each profile %>
+<% for(let profile of profiles) { %>
+    <%- include('./partial', { profile: profile }) %>
+<% } %>
+
+<a href="/profile/create?accountId=<%= account.id %>">Create Profile</a>
+
+<%- include('../base/bottom') %>

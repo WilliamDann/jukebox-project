@@ -1,0 +1,24 @@
+<%- include('../base/top') %>
+
+<h1>Profile Information</h1>
+
+<b>Id</b>
+<p><%= profile.id %></p>
+
+<b>Display Name</b>
+<p><%= profile.displayName %></p>
+
+<b>Account Id</b>
+<p><%= profile.accountId %></p>
+
+<b>Spotify Account</b>
+<% if (profile.spotAuthToken) { %>
+    <a style="color: green">Link Spotify</a>
+<% } else { %>
+    <p style="color: red">Unlink Spotify</p>
+<% } %>
+
+<a href="/profile/update?id=<%= profile.id %>">Update</a>
+<a href="/profile/delete?id=<%= profile.id %>">Delete</a>
+
+<%- include('../base/bottom') %>

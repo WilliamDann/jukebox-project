@@ -1,0 +1,12 @@
+<%- include('../base/top') %>
+
+<h1>Create Profile</h1>
+
+<form method="post" action="/profile/create" enctype="application/x-www-form-urlencoded">
+    <label for="displayName">Display Name</label>
+    <input type="text" name="displayName">
+    <input type="hidden" name="accountId" value="<%= account.id %>" readonly>
+    <input type="submit" value="Create"> 
+</form>
+
+<%- include('../base/bottom') %>
