@@ -1,5 +1,4 @@
 import { readFileSync } from "fs";
-import winston from "winston";
 
 // spotify config data
 export default class SpotifyConfig {

@@ -1,12 +1,12 @@
-import account  from './account'
-import jukebox  from './jukebox';
-import page     from './page';
-import token    from './token';
+import accessToken  from "./accessToken";
+import account      from "./account";
+import page         from "./page";
+import profile      from "./profile";
 
-// import all routes
-export default function() {
+export default function()
+{
     account();
-    token();
+    profile();
+    accessToken();
     page();
-    jukebox();
 }

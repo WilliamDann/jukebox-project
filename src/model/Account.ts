@@ -1,114 +1,88 @@
-import { hashSync, compareSync, genSaltSync } from 'bcrypt'
-import {escape}                               from 'mysql'
-import queryAsync                             from '../util/queryAsync';
-import sqlSetString                           from '../util/sqlSetString';
-import Token from './Token';
+import { escape, Query }                        from "mysql"
+import queryAsync                               from "../util/queryAsync"
+import { genSaltSync, hashSync, compareSync }   from "bcrypt"
+import sqlSetString                             from "../util/sqlSetString"
 
-// user account information
 export default class Account {
-    id              !: number;
-    email           !: string;
-    passwordHash    !: string;
-    displayName     !: string;
+    id           !: number
+    email        !: string
+    displayName  !: string
+    passwordHash !: string
 
-    spotAuthCode    !: string;
+    constructor() { }
 
-    hashPassword(password: string)
+    static hashPassword(plainText: string): string {
+        return hashSync(plainText, genSaltSync(10));
+    }
+
+    checkPassword(plainText: string): boolean {
+        return compareSync(plainText, this.passwordHash);
+    }
+
+    // if a given user id exists in the db
+    static async exists(id: number): Promise<boolean>
     {
-        return hashSync(password, genSaltSync(10));
+        return await this.read(id) == null;
     }
 
-    checkPassword(plainText: string, hashed: string)
+    // if a given email already exists in the db
+    static async emailExists(email: string): Promise<boolean>
     {
-        return compareSync(plainText, hashed);
+        return await this.readEmail(email) != null;
     }
 
-    // create in the db
-    public async Create() {
-        const query = `
-            insert into accounts
-                (email, passwordHash, displayName)
-            values(
-                ${escape(this.email)},
-                ${escape(this.passwordHash)},
-                ${escape(this.displayName)}
-            );
-        `;
-
-        await queryAsync(query)
+    // read from the DB into an Account Object by user id
+    static async read(id: number): Promise<Account|null>
+    {
+        const result = await queryAsync(`select * from accounts where id=${escape(id)}`);
+        if (!result || result.length == 0) {
+            return null
+        }
+        return Object.assign(new Account(), result[0]);
     }
 
-    // get an account by it's id
-    static async Read(id: number): Promise<Account|null> {
-        const query = `
-            select * from accounts where id=${escape(id)}
-        `
-
-        let data = await queryAsync(query);
-        if (data.length == 0) {
+    // read from the DB into an Account Object by email
+    static async readEmail(email: string): Promise<Account|null>
+    {
+        const result = await queryAsync(`select * from accounts where email=${escape(email)}`);
+        if (!result || result.length == 0) {
             return null;
         }
-
-        // return new account object 
-        return Object.assign(new Account(), data[0])
+        return Object.assign(new Account(), result[0]);
     }
 
-    // get an account by it's email
-    static async ReadEmail(email: string): Promise<Account|null> {
-        const query = `select * from accounts where email=${escape(email)}`
-
-        let data = await queryAsync(query);
-        if (data.length == 0) {
-            return null;
-        }
-
-        // return new account object 
-        return Object.assign(new Account(), data[0])
+    // create this object in the db
+    async create(): Promise<Query>
+    {
+        const result = await queryAsync(`
+            insert into
+                accounts(email, displayName, passwordHash)
+                values(
+                    ${escape(this.email)},
+                    ${escape(this.displayName)},
+                    ${escape(this.passwordHash)}
+                );
+            `)
+        return result;
     }
 
-    // update in the db
-    public async Update() {
-        // don't let ids be updated
-        const data = Object.assign({}, this) as any;
-        delete data.id;
-
-        const query = `
-            update accounts ${sqlSetString(data)} where id=${this.id}
-        `;
-
-        await queryAsync(query);
+    // update this object in the db
+    async update(): Promise<Query>
+    {
+        const result = await queryAsync(`update accounts set ${sqlSetString(this)}where id=${escape(this.id)}`);
+        return result;
     }
 
-    // delete in the db
-    public async Delete() {
-        // delete sign in tokens for account
-        const tokens = await Token.ReadAccountId(this.id);
-        for (let token of tokens) {
-            token.Delete()
-        }
-
-        // delete the user accoutn
-        const query = `delete from accounts where id=${this.id}`
-        await queryAsync(query)   
+    async delete(): Promise<Query>
+    {
+        const result = await queryAsync(`delete from accounts where id=${escape(this.id)}`);
+        return result;
     }
 
-    // if the given account info already exists
-    public async Exists(): Promise<boolean> {
-        const query = `select * from accounts where id=${escape(this.id)} or email=${escape(this.email)}`
-        const data  = await queryAsync(query)
-
-        return data.length != 0
-    }
-
-    // determine if a given password is a match
-    public async PasswordMatch(password: string): Promise<boolean> {
-        return this.checkPassword(password, this.passwordHash)
-    }
-
-    // get a clean version of the data to send to a client
-    public CleanObject(): object {
-        let obj = Object.assign({}, this) as any;
-        delete obj.passwordHash
-        return obj;
+    // remove sensitive info from the object
+    cleanObj(): any {
+        const cpy = Object.assign({}, this) as any;
+        delete cpy.passwordHash;
+        return cpy;
     }
 }

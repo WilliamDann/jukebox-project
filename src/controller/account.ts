@@ -1,184 +1,164 @@
-import Env              from "../env";
-import requireFields    from '../util/requireFields';
-import Account          from '../model/Account';
-import Token            from "../model/Token";
+import { Request, Response }            from "express";
+import Env                              from "../env";
+import InvalidRequestError              from "../error/InvalidRequestError";
+import Account                          from "../model/Account";
+import requireFields                    from "../util/requireFields";
+import AccessToken                      from "../model/AccessToken";
+import PermissionError                  from "../error/PermissionError";
+import AuthError                        from "../error/AuthError";
 
-// account controller
+// get account from request query
+export async function getAccount(req: Request): Promise<Account>
+{
+    const accountId = req.query.accountId as any;
+    const account   = await Account.read(accountId);
+
+    // if account was not read, fail
+    if (!account)
+        throw new InvalidRequestError('invalid accountId supplied');
+
+    return account;
+}
+
+// get either the accoundId supplier or the currently authed account
+export async function getAccountOrAuthedAccount(req: Request): Promise<Account|null>
+{
+    try {
+        const account = await getAccount(req); 
+        return account;
+    } catch { }
+
+    try {
+        const authed = await getAuthedAccount(req);
+        return authed;
+    } catch { }
+
+    return null;
+}
+
+// get the user that is currently signed in via their access token
+export async function getAuthedAccount(req: Request): Promise<Account>
+{
+    const accessToken = await AccessToken.read(req.cookies.accessToken);
+    if (!accessToken)
+        throw new AuthError();
+
+    const user = await Account.read(accessToken.accountId);
+    if (!user)
+        throw new AuthError();
+
+    return user;
+}
+
 export default function() {
+    const app = Env.getInstance().app;
+    const db  = Env.getInstance().db;
+
     /// Frontend routes
 
-    // create account page
-    Env.getInstance().app.get('/account/create', async (req, res) => {
-        res.render('account/create')
+    // create account route
+    app.get('/account/create', (req, res) => {
+        res.render('account/create');
     })
 
-    // view account page
-    Env.getInstance().app.get('/account/read', async (req, res) => {
-        // determine account id
-        let accountId = req.query.id;
-        if (!accountId) {
-            accountId = req.cookies.accountId;
-        }
-        if (!accountId) {
-            res.render('base/redirect', { redirect: '/signin' })
-            return;
-        }
+    // read account route
+    app.get('/account/read', async (req, res) => {
+        // get either the acccount if the id supplied or the signed in account
+        const account = await getAccountOrAuthedAccount(req)
 
-        // find the account
-        let account = await Account.Read(accountId as any);
+        // if neither exists prompt user to sign in
         if (!account) {
-            res.render('base/redirect', { redirect: '/signin' })
-            return;
+            return res.redirect('/auth')
         }
 
-        // render the read page
-        res.render('account/read', { account: account.CleanObject() })
-    })
+        // render account pgae
+        res.render('account/read', { account: account.cleanObj() });
+    });
 
-    // udapte account page
-    Env.getInstance().app.get('/account/update', async (req, res) => {
-        // determine account id
-        let accountId = req.cookies.id;
-        if (!accountId) {
-            res.render('base/error', { error: "Invalid account id" });
-            return;
-        }
+    // render update page
+    app.get('/account/update', async (req, res) => {
+        const account = await getAccount(req);
 
-        // find the account
-        let account = await Account.Read(accountId as any);
-        if (!account) {
-            res.render('base/error', { error: "Account not found" });
-            return;
-        }
+        // render update page
+        res.render('account/update', { account: account.cleanObj() });
+    });
 
-        // render the read page
-        res.render('account/update', { account: account.CleanObject() })
-    })
+    // render delete page
+    app.get('/account/delete', async (req, res) => {
+        const account = await getAccount(req);
+        
+        res.render('account/update', { account: account.cleanObj() });
+    });
 
-    // delete account page
-    Env.getInstance().app.get('/account/delete', async (req, res) => {
-        // determine account id
-        let accountId = req.cookies.id;
-        if (!accountId) {
-            res.render('base/error', { error: "Invalid account id" });
-            return;
-        }
+    /// Backend routes
 
-        // find the account
-        let account = await Account.Read(accountId as any);
-        if (!account) {
-            res.render('base/error', { error: "Account not found" });
-            return;
-        }
+    // handle form submission from account create page
+    app.post('/account/create', async (req, res) => {
+        const missing = requireFields(req.body, [ 'email', 'displayName', 'password' ]);
+        if (missing.length != 0)
+            throw new InvalidRequestError(`missing ${JSON.stringify(missing)} from request body`);
+    
+        // create account object
+        const account        = new Account();
+        account.email        = req.body.email;
+        account.displayName  = req.body.displayName;
+        account.passwordHash = Account.hashPassword(req.body.password);
 
-        // render the read page
-        res.render('account/delete', { account: account.CleanObject() })
-    })
+        // check if account already exists
+        if (await Account.emailExists(account.email))
+            throw new InvalidRequestError('email is alrady in use');
 
-    /// API ROUTES
-    // post route for user accounts
-    Env.getInstance().app.post('/api/account/create', async (req, res) => {
-        // check required fields
-        const missing = requireFields(req.body, [ 'email', 'password', 'displayName' ])
-        if (missing.length != 0) {
-            res.status(400);
-            res.send("You are missing " + JSON.stringify(missing) + " from the request body");
-            return;
+        // create in db
+        await account.create();
+
+        // show user signin page
+        res.render('/auth', { message: 'User account created.' });
+    });
+
+    // handle form submission from account update page
+    app.post('/account/update', async (req, res) => {
+        const missing = requireFields(req.body, [ 'id', 'email', 'displayName', 'password' ]);
+        if (missing.length != 0)
+            throw new InvalidRequestError(`missing ${JSON.stringify(missing)} from request body`);
+    
+        // get signed in user by auth user and check if the user can edit this data
+        const authUser = await getAuthedAccount(req)
+        if (authUser.id != req.body.id) {
+            throw new PermissionError();
         }
 
         // create account object
-        let account          = new Account()
+        const account        = new Account();
+        account.id           = req.body.id as any;
         account.email        = req.body.email;
-        account.passwordHash = account.hashPassword(req.body.password)
         account.displayName  = req.body.displayName;
 
-        // if we already have an account for this user, fail
-        if (await account.Exists()) {
-            res.status(400);
-            res.send("Email is already in use.")
-            return;
-        }
-
-        // create the user in the db
-        account.Create();
-
-        // OK
-        res.render('base/redirect', { redirect: '/signin' })
-    });
-
-    // get route for user accounts
-    Env.getInstance().app.get('/api/account/read', async (req, res) => {
-        const missing = requireFields(req.query, [ 'id' ])
-        if (missing.length != 0) {
-            res.status(400);
-            res.send("You are missing " + JSON.stringify(missing) + " from the request body");
-            return;
-        }
-        
-        // query account info from db
-        const account = await Account.Read(req.query.id as any)
-        if (account == null) {
-            res.sendStatus(404);
-            return;
-        }
-
-        // don't send password hash in request
-        const data = Object.assign({}, account) as any;
-        data.passwordhash = undefined;
-
-        // OK
-        res.json(data);
-    });
-
-    // update route for user accounts
-    Env.getInstance().app.post('/api/account/update', async (req, res) => {
-        // ensure user is signed in
-        const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
-        if (missing.length != 0) 
-                return res.redirect('/signin')
-
-        // get the user to update
-        const account = await Account.Read(req.cookies.accountId);
-        if (account == null) {
-            res.sendStatus(404); // not found. because of auth middleware we should not be able to get here.
-            return;
-        }
-
-        // set new values
-        if (req.body.displayName)
-            account.displayName = req.body.displayName;
-        if (req.body.email)
-            account.email = req.body.email
-
         // update in db
-        account.Update();
+        await account.update();
 
-        // OK
-        res.render('base/redirect', { redirect: '/account/read?id=' + account.id })
+        // show user updated data
+        res.redirect('/account/read?id=' + account.id);
     });
 
-    // delete route for user accounts
-    Env.getInstance().app.post('/api/account/delete', async (req, res) => {
-        // check user token
-        const missing = requireFields(req.cookies, [ 'accountId', 'token' ])
+    // handle form submission from account delete page
+    app.post('/account/delete', async (req, res) => {
+        const missing = requireFields(req.body, [ 'id' ]);
         if (missing.length != 0)
-            return res.redirect('/signin');
-
-        // get the user to update
-        const account = await Account.Read(req.cookies.accountId);
-        if (account == null) {
-            res.sendStatus(404); // not found
-            return;
+            throw new InvalidRequestError(`missing ${JSON.stringify(missing)} from request body`);
+  
+        // get signed in user by auth user and check if the user can edit this data
+        const authUser = await getAuthedAccount(req)
+        if (authUser.id != req.body.id) {
+            throw new PermissionError();
         }
 
-        // delete the account
-        account.Delete();
+        // create account object
+        const account = new Account()
+        account.id = req.body.id as any;
 
-        // remove cookies for deleted account
-        res.cookie('accountId', undefined);
-        res.cookie('token', undefined);
-        
-        // OK
-        res.render('base/redirect', { redirect: '/' })
-    });
+        // delete account
+        await account.delete();
+
+        res.render('base/page', { message: "Account deleted." });
+    })
 }
