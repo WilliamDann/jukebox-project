@@ -1,10 +1,19 @@
 <%- include('../base/top') %>
 
-<% // render partial for each profile %>
-<% for(let profile of profiles) { %>
-    <%- include('./partial', { profile: profile }) %>
-<% } %>
 
-<a href="/profile/create?accountId=<%= account.id %>">Create Profile</a>
+<div class="table">
+    <div class="button">
+        <a href="/profile/create?accountId=<%= account.id %>">Create Profile</a>
+    </div>
+
+    <div class="row">
+        <% // render partial for each profile %>
+        <% for(let profile of profiles) { %>
+            <%- include('./partial', { profile: profile }) %>
+        <% } %>
+    </div>
+    
+</div>
+
 
 <%- include('../base/bottom') %>
