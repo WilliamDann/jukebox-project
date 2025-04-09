@@ -3,7 +3,7 @@ use jukeboxdb;
 
 -- table storing user accounts
 create table if not exists accounts (
-    id           int unique not null auto_increment,
+    id           int          unique not null auto_increment,
     email        varchar(255) unique not null,
     displayName  varchar(255) not null,
     passwordHash varchar(255) not null,
@@ -26,6 +26,7 @@ create table if not exists profiles (
     id              int unique not null auto_increment,
     displayName     varchar(255) not null,
     accountId       int not null,
+    active          boolean not null default false,
 
     -- spotify assigns an auth code to every connected account
     --  this is different than the token that performs actions.

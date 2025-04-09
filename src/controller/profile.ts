@@ -5,6 +5,7 @@ import InvalidRequestError                          from "../error/InvalidReques
 import account, { getAccount, getAuthedAccount }    from "./account";
 import PermissionError                              from "../error/PermissionError";
 import requireFields                                from "../util/requireFields";
+import AppError from "../error/AppError";
 
 // get the current profile from request data
 export async function getProfile(req: Request): Promise<Profile>
@@ -34,6 +35,47 @@ export default function()
         res.render('profile/list', { account: account.cleanObject(), profiles: profiles.map(x => x.cleanObject()) });
     });
     
+    // set a given profile to active
+    app.get('/profile/setActive', async (req, res) => {
+        const account = await getAuthedAccount(req);
+        const profile = await getProfile(req);
+
+        if (profile.accountId != account.id)
+            throw new PermissionError();
+
+        if (!profile.spotAuthToken)
+            throw new AppError("Connection Error", "To set your profile to active you first have to connect the account.")
+
+        // deactivate others
+        for (let prof of await Profile.readAccount(account.id)) {
+            prof.active = false;
+            prof.update();
+        }
+
+        // activate given account
+        profile.active = true;
+        profile.update();
+
+        // Show user profile list
+        res.redirect('/profile/my');
+    });
+
+    // set a given profile to inactive
+    app.get('/profile/setInactive', async (req, res) => {
+        const account = await getAuthedAccount(req);
+        const profile = await getProfile(req);
+
+        if (profile.accountId != account.id)
+            throw new PermissionError();
+
+        // set profile ot inactive
+        profile.active = false;
+        profile.update();
+
+        // show user profile list
+        res.redirect('/profile/my');
+    });
+
     // read page for profile data
     app.get('/profile/read', async (req, res) => {
         const profile = await getProfile(req);
@@ -77,6 +119,7 @@ export default function()
         const profile = new Profile();
         profile.accountId   = req.body.accountId;
         profile.displayName = req.body.displayName;
+        profile.active      = false;
         
         await profile.create();
 

@@ -62,23 +62,21 @@ export default function()
         if (!account)
             throw new InvalidRequestError(`Invalid account id`);
 
-        // TODO only add to active accounts
-        //  this is just to make it work!
-        const profiles = await Profile.readAccount(account.id);
-        if (profiles.length == 0)
-            throw new InvalidRequestError(`No profiles on account`)
+        // get currently active profile on account
+        const profile = await Profile.readActiveProfile(account.id);
+        if (!profile)
+            throw new InvalidRequestError(`No Active Profile is set account.`);
 
         // get auth token from profile
-        const tokens = await SpotifyAccessToken.readProfile(profiles[0].id);
+        const tokens = await SpotifyAccessToken.readProfile(profile.id);
         if (tokens.length == 0)
-            throw new InvalidRequestError('Active Profile not linked');
-
-        const token = tokens[0].access_token;
+            throw new InvalidRequestError('Active Profile is not linked');
 
         // build request
-        const url = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
-        await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, token)
-
+        const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
+        const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, tokens[0].access_token)
+        console.log(result);
+        
         // OK
         res.render('suggest/done')
     });
