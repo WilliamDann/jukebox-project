@@ -9,8 +9,10 @@ export default class Profile
     id              !: number
     displayName     !: string
     accountId       !: number
+    active          !: boolean
     spotAuthToken   !: string
 
+    // get a profile by it's id
     static async read(id: number): Promise<Profile|null>
     {
         const results = await queryAsync(`select * from profiles where id=${escape(id)}`);
@@ -20,6 +22,7 @@ export default class Profile
         return Object.assign(new Profile(), results[0]);
     }
 
+    // get profiles associated with an account
     static async readAccount(accountId: number): Promise<Profile[]>
     {
         const results = await queryAsync(`select * from profiles where accountId=${escape(accountId)}`);
@@ -33,12 +36,22 @@ export default class Profile
         return arr;
     }
 
+    // get the currently active profile on an account
+    static async readActiveProfile(accountId: number): Promise<Profile|null>
+    {
+        const results = await queryAsync(`select * from profiles where accountId=${escape(accountId)} and active=true`);
+        if (!results || results.length == 0)
+            return null;
+
+        return Object.assign(new Profile(), results[0]);
+    }
+
     async create(): Promise<Query>
     {
         const results = await queryAsync(`
             insert into
-                profiles(displayName, accountId)
-                values(${escape(this.displayName)}, ${escape(this.accountId)})
+                profiles(displayName, accountId, active)
+                values(${escape(this.displayName)}, ${escape(this.accountId)}, ${this.active})
             `)
         return results;
     }

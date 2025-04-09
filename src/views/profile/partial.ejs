@@ -9,6 +9,10 @@
         <p style="display: inline;">Spotify Linked</p>
     <% } %>
     <br><br>
+
+    <p>Active: <%= profile.active %></p>
+    <a href="/profile/setActive?profileId=<%= profile.id %>">Activate</a>
+    <a href="/profile/setInactive?profileId=<%= profile.id %>">Deactivate</a><br><br>
     
     <a style="display: inline;" href="/profile/read?profileId=<%= profile.id %>">View</a>
     <a style="display: inline;" href="/profile/update?profileId=<%= profile.id %>">Update</a>
