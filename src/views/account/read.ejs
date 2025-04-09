@@ -14,9 +14,10 @@
     <b>Email</b>
     <p><%= account.email %></p>
 
-    <a href="/account/update?id=<%= account.id %>">Update</a>
-    <a href="/account/delete?id=<%= account.id %>">Delete</a>
-</div>
+    <a style="color: green" href="/search?suggestTo=<%= account.id %>">Suggest Page</a><br><br>
 
+    <a href="/account/update?accountId=<%= account.id %>">Update</a>
+    <a href="/account/delete?accountId=<%= account.id %>">Delete</a>
+</div>
 
 <%- include('../base/bottom') %>

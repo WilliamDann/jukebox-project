@@ -1,7 +1,10 @@
 <%- include('../base/top') %>
 
+<% console.log(suggestTo) %>
+
 <form action="/results" method="get">
     <label for="name">Song Search</label>
+    <input name="suggestTo" type="hidden" readonly value="<%= suggestTo %>">
     <input name="search" type="text" placeholder="Search a song...">
     <input type="submit" value="Search">
 </form>
