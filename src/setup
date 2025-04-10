@@ -1,1 +1,3 @@
-npm i && npm run start
+#!/bin/sh
+npm install
+npm run start
