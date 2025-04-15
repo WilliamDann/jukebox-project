@@ -28,7 +28,7 @@ export default function()
     const db  = Env.getInstance().db;
 
     // list all the profiles that exist under a given account id
-    app.get('/profile/my', async(req, res) => {
+    app.get('/profile', async(req, res) => {
         const account  = await getAuthedAccount(req);
         const profiles = await Profile.readAccount(account.id);
         
@@ -57,7 +57,7 @@ export default function()
         profile.update();
 
         // Show user profile list
-        res.redirect('/profile/my');
+        res.redirect('/profile');
     });
 
     // set a given profile to inactive
@@ -73,7 +73,7 @@ export default function()
         profile.update();
 
         // show user profile list
-        res.redirect('/profile/my');
+        res.redirect('/profile');
     });
 
     // read page for profile data
@@ -124,7 +124,7 @@ export default function()
         await profile.create();
 
         // show user the list of their own profiles
-        res.redirect('/profile/my');
+        res.redirect('/profile');
     });
 
     // route to handle update profile form
@@ -161,6 +161,6 @@ export default function()
         await profile.delete();
     
         // show user list of profiles
-        res.redirect('/profile/my');
+        res.redirect('/profile');
     });
 }
