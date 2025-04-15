@@ -9,6 +9,9 @@ import { getAuthedAccount } from "./account";
 import { getProfile }       from "./profile";
 import querystring          from 'querystring'
 
+
+// helper function to update auth spotify token (the 3rd one)
+
 export default function()
 {
     const app = Env.getInstance().app;
