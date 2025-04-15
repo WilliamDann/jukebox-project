@@ -1,19 +1,22 @@
 <%- include('../base/top') %>
 
-<div class="container">
-    <h1>Create Profile</h1>
 
-    <form method="post" action="/profile/create" enctype="application/x-www-form-urlencoded">
-        <div class="input-data">
-            <input type="text" name="displayName" placeholder = "Display Name" required>
+<h1 class="row justify-content-center">Create Profile</h1>
+
+<form method="post" action="/profile/create" enctype="application/x-www-form-urlencoded">
+    <div class="col-lg-4 offset-lg-4">
+        <div class="form-group">
+            <input type="text" name="displayName" placeholder = "Display Name" class="form-control" required>
             <input type="hidden" name="accountId" value="<%= account.id %>" readonly>
         </div>
 
-        <div class="input-data">
-            <input type="submit" value="Create" > 
+        <div class="form-group row justify-content-center">
+            <input type="submit" value="Create" class="btn btn-primary"> 
         </div> 
-    </form> 
-</div>
+    </div>
+
+</form> 
+
 
 
 <%- include('../base/bottom') %>
