@@ -1,6 +1,6 @@
-from node:lts-alpine
+FROM node:lts-alpine
 
-workdir app/
-expose 8080
+WORKDIR app/
+EXPOSE 8080
 
-cmd npm i && npm run start
+CMD npm i && npm run start
