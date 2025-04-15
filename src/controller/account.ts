@@ -61,6 +61,12 @@ export default function() {
         res.render('account/create');
     })
 
+    //logout route
+    app.get('/account/logout', (req, res) => {
+        res.clearCookie('accessToken');
+        return res.redirect('/auth')
+    });
+
     // read account route
     app.get('/account/read', async (req, res) => {
         // get either the acccount if the id supplied or the signed in account

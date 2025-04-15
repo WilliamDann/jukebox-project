@@ -10,7 +10,7 @@ import { getProfile }       from "./profile";
 import querystring          from 'querystring'
 
 
-// helper function to update auth spotify token (the 3rd one)
+// helper function to update auth spotify token (the 3rd one) 
 
 export default function()
 {
