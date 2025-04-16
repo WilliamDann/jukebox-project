@@ -2,6 +2,7 @@ import Env                  from "../env";
 import AppError             from "../error/AppError";
 import InvalidRequestError  from "../error/InvalidRequestError";
 import PermissionError      from "../error/PermissionError";
+import SpotifyError         from "../error/SpotifyError";
 import Account              from "../model/Account";
 import Profile              from "../model/Profile";
 import SpotifyAccessToken   from "../model/SpotifyAccessToken";
@@ -97,7 +98,10 @@ export default function()
         // build request
         const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
         const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, tokens[0].access_token)
-        console.log(result);
+        const data   = JSON.parse(result)
+        
+        if (data.error)
+            throw new SpotifyError(data.error.message);
         
         // OK
         res.render('suggest/done')
