@@ -98,9 +98,14 @@ export default function()
         // build request
         const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
         const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, tokens[0].access_token)
-        const data   = JSON.parse(result)
         
-        if (data.error)
+        // try and parse error data
+        let data;
+        try {
+            data = JSON.parse(result)
+        }
+        
+        if (data && data.error)
             throw new SpotifyError(data.error.message);
         
         // OK
