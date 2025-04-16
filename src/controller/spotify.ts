@@ -103,6 +103,8 @@ export default function()
         let data;
         try {
             data = JSON.parse(result)
+        } catch (e) {
+            // console.log(e)
         }
         
         if (data && data.error)
