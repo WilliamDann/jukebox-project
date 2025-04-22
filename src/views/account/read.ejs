@@ -3,23 +3,35 @@
 
 
 <div class="container">
-    <h1>Account Information</h1>
-
-    <b>Id</b>
-    <p><%= account.id %></p>
-
-    <b>Display Name</b>
-    <p><%= account.displayName %></p>
-
-    <b>Email</b>
-    <p><%= account.email %></p>
-
-    <a style="color: green" href="/search?suggestTo=<%= account.id %>">Suggest Page</a><br>
-    <a style="color: green" href="/account/qr">Printable QR Code</a><br><br>
-
-    <a href="/account/update?accountId=<%= account.id %>">Update</a>
-    <a href="/account/delete?accountId=<%= account.id %>">Delete</a>
-    <a href="/account/logout?" style="color: purple;">Log Out</a>
+    <h1 class="row justify-content-center">Account Information</h1>
+    <div class="row justify-content-center">
+        <b>Id: &nbsp</b>
+        <p><%= account.id %></p>
+    </div>
+    <div class="row justify-content-center">
+        <b>Display Name: &nbsp</b>
+        <p><%= account.displayName %></p>
+    </div>
+        
+    <div class="row justify-content-center">
+        <b>Email: &nbsp</b>
+        <p><%= account.email %></p>
+    </div>
+    
+    <div class="row justify-content-center">
+        <a style="color: green" href="/search?suggestTo=<%= account.id %>">Suggest Page</a><br>
+        <p>&nbsp | &nbsp</p>
+        <a style="color: green" href="/account/qr">Printable QR Code</a><br><br>
+    </div> 
+    
+    <div class="row justify-content-center">
+        <a href="/account/update?accountId=<%= account.id %>">Update &nbsp</a>
+        <p>&nbsp | &nbsp</p>
+        <a href="/account/delete?accountId=<%= account.id %>">Delete &nbsp</a>
+        <p>&nbsp | &nbsp</p>
+        <a href="/account/logout?" style="color: purple;">Log Out</a>
+    </div>
+    
 </div>
 
 <%- include('../base/bottom') %>
