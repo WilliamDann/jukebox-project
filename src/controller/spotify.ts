@@ -2,6 +2,7 @@ import Env                  from "../env";
 import AppError             from "../error/AppError";
 import InvalidRequestError  from "../error/InvalidRequestError";
 import PermissionError      from "../error/PermissionError";
+import SpotifyError         from "../error/SpotifyError";
 import Account              from "../model/Account";
 import Profile              from "../model/Profile";
 import SpotifyAccessToken   from "../model/SpotifyAccessToken";
@@ -20,9 +21,31 @@ export default function()
     // start of the song suggestion flow
     //  search -> results -> suggest
     app.get('/search', async (req, res) => {
-        const suggestTo = req.query.suggestTo;
+        const suggestTo = req.query.suggestTo as any;
+        const account   = await Account.read(suggestTo);
+        if (!account) 
+            throw new InvalidRequestError("suggestTo does not point to a valid account");
 
-        res.render('suggest/search', { suggestTo: suggestTo });
+        // try and get the user's currently playing song
+        const profile   = await Profile.readActiveProfile(account.id);
+        let playing     = {};
+        if (profile)
+        {
+            const spotToken = await SpotifyAccessToken.readProfile(profile.id);
+            if (spotToken.length != 0) {
+                const data = await Env.getInstance().spotify.request(
+                    {},
+                    '/v1/me/player/queue',
+                    'api.spotify.com',
+                    'get',
+                    null,
+                    spotToken[0].access_token
+                );
+                playing = JSON.parse(data).currently_playing;
+            }
+        }
+
+        res.render('suggest/search', { suggestTo: account, playing: playing });
     });
 
     // results from the song search page
@@ -78,7 +101,17 @@ export default function()
         // build request
         const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
         const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, tokens[0].access_token)
-        console.log(result);
+        
+        // try and parse error data
+        let data;
+        try {
+            data = JSON.parse(result)
+        } catch (e) {
+            // console.log(e)
+        }
+        
+        if (data && data.error)
+            throw new SpotifyError(data.error.message);
         
         // OK
         res.render('suggest/done')

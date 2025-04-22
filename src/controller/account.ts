@@ -96,6 +96,13 @@ export default function() {
         res.redirect('/');
     });
 
+    // show the page that gives the user a qr code
+    app.get('/account/qr', async (req, res) => {
+        const account = await getAuthedAccount(req);
+
+        res.render('account/qr', { account: account.cleanObject() });
+    });
+
     /// Backend routes
 
     // handle form submission from account create page
