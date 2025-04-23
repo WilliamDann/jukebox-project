@@ -134,33 +134,4 @@ export default class SpotifyIntegration {
         this.token = await this.fetchToken();
         this.saveToken('spot.json');
     }
-
-    async checkAndRefreshToken(){
-
-         // if token exists and has not expired
-         if (this.token?.refresh_token && (this.token.generated + this.token.expires_in*1000) < Date.now()) {
-
-            // this.token = await this.fetchToken();
-
-            const refreshToken = this.token.refresh_token;
-            const url = "https://accounts.spotify.com/api/token";
-         
-             const payload = {
-               method: 'POST',
-               headers: {
-                 'Content-Type': 'application/x-www-form-urlencoded'
-               },
-               body: new URLSearchParams({
-                 grant_type: 'refresh_token',
-                 refresh_token: refreshToken,
-                 client_id: this.config.client_id
-               }),
-             }
-             const body = await fetch(url, payload);
-             const response = await body.json();
-
-             this.token.access_token = response.access_token;
-             this.token.refresh_token = response.refresh_token;
-        }
-    }
 }

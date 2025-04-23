@@ -8,10 +8,11 @@ import PermissionError                  from "../error/PermissionError";
 import AuthError                        from "../error/AuthError";
 
 // get account from request query
-export async function getAccount(req: Request): Promise<Account>
+export async function getAccount(req: Request, accountId ?: string): Promise<Account>
 {
-    const accountId = req.query.accountId as any;
-    const account   = await Account.read(accountId);
+    if (!accountId)
+        accountId = req.query.accountId as string;
+    const account   = await Account.read(accountId as any);
 
     // if account was not read, fail
     if (!account)
