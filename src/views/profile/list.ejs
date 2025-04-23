@@ -1,12 +1,11 @@
 <%- include('../base/top') %>
 
+<div class="row justify-content-center">
+    <a class="btn btn-primary p-3 m-2" href="/profile/create?accountId=<%= account.id %>"><h3>Create Profile</h3></a>
+</div>
 
-<div class="table">
-    <div class="button">
-        <a href="/profile/create?accountId=<%= account.id %>">Create Profile</a>
-    </div>
-
-    <div class="row">
+<div class="tableProfile">
+    <div class="rowProfile">
         <% // render partial for each profile %>
         <% for(let profile of profiles) { %>
             <%- include('./partial', { profile: profile }) %>

@@ -1,131 +1,25 @@
-*{
-    margin: 0;
-    padding: 0;
-    outline: none;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-  }
-
-/* Centers objects as of right now */
-body {
-    background-color: gray;
-    min-height: 100vh;
-    background: linear-gradient(115deg, #05b840 10%, #9f01ea 90%);
-}
-
-p{
-    font-size: 20px;
-    margin: 10px;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-
-/* HEADER */
-.top-bar {
-    background-color: #333;
-    color: white;
-    padding: 10px 20px;
-    position: sticky;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 1000; /* ensure it stays on top */
-  }
-  
-  .top-bar a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-  }
-  
-  .top-bar a:hover {
-    background-color: #555;
-  }
-
-
-/* Optimized for new PROFILE creation for now
-
-used by: account read, profile creation, home
-*/
-.container{
-    max-width: 800px;
-    background: #fff;
-    width: 800px;
-    padding: 25px 40px 10px 40px;
-    box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-    text-align: center;
-}
-
-h1{
-    text-align: center;
-    font-size: 41px;
-    font-weight: 600;
-    font-family: 'Poppins', sans-serif;
-    /* background: -webkit-linear-gradient(right, #05b840, #9f01ea, #05b840, #9f01ea); */
-    background: black;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin: 30px;
-}
-
-.container form{
-    padding: 30px 0 0 0;
-}
-
-.container .input-data{
-    width: 100%;
-    height: 70px;
-    position: relative;
-    text-align: center;
-}
-
-.container .input-data input{
-    text-align: center;
-    font-size: x-large;
-    width:50%;
-    height: 50px
-}
-
-
 
 /* PROFILE SPECIFIC
  */
-.button{
-    text-align: center;
-    font-size: x-large;
-    height: 50px;
-    background-color: rgb(255, 255, 255);
-    border-radius: 10%;
-    padding: 10px;
-    border: 10px;
-    margin: 20px;
-}
 
-/*
-    used by: profile
-*/
-.table{
+.tableProfile{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
-    /* background-color: beige; */
     padding-left: 50px;
     padding-right: 50px;
     padding-bottom: 50px;
     height: fit-content;
 }
 
-.row{
+.rowProfile{
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: center;
-    flex-direction: row; */
     gap: 10px;
     padding-left: 20%;
     padding-right: 20%;
+    justify-content: center;
 }
 
 .profile{
