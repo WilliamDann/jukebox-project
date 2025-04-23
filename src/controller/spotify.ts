@@ -1,3 +1,4 @@
+import { Request } from "express";
 import Env                  from "../env";
 import AppError             from "../error/AppError";
 import InvalidRequestError  from "../error/InvalidRequestError";
@@ -6,12 +7,67 @@ import SpotifyError         from "../error/SpotifyError";
 import Account              from "../model/Account";
 import Profile              from "../model/Profile";
 import SpotifyAccessToken   from "../model/SpotifyAccessToken";
-import { getAuthedAccount } from "./account";
+import { getAccount, getAuthedAccount } from "./account";
 import { getProfile }       from "./profile";
 import querystring          from 'querystring'
 
 
 // helper function to update auth spotify token (the 3rd one) 
+
+// get the current auth token for a user
+export async function getAuthToken(req: Request, account ?: Account): Promise<SpotifyAccessToken>
+{
+    if (!account)
+        account = await getAuthedAccount(req)
+    const profile = await Profile.readActiveProfile(account.id);
+    if (!profile) 
+        throw new InvalidRequestError('No active profile found on requested account');
+
+    return (await SpotifyAccessToken.readProfile(profile.id))[0];
+}
+
+// use the refresh token to generate a new auth token
+export async function refreshToken(req: Request, token ?: SpotifyAccessToken): Promise<SpotifyAccessToken>
+{
+    // if we've not gotten a token already, get one
+    if (!token)
+        token = await getAuthToken(req);
+
+    // send request to generate new token and parse result
+    const result = JSON.parse(await Env.getInstance().spotify.request(
+        {
+            grant_type      : 'refresh_token',
+            refresh_token   : token.refresh_token,
+            client_id       : Env.getInstance().spotify.config.client_id
+        },
+        '/api/token',
+        'accounts.spotify.com',
+        'POST',
+        null,
+        false
+    ));
+
+    // check for access token
+    if (!result || !result.access_token)
+        throw new SpotifyError("Failed to use refresh token: " + JSON.stringify(result));
+
+    console.log(result);
+
+    // return new access token
+    return Object.assign(new SpotifyAccessToken(), result);
+}
+
+// get a valid access token, even if we need to refresh first
+export async function getAuthTokenOrRefresh(req: Request, account ?: Account): Promise<SpotifyAccessToken>
+{
+    // get token
+    const token      = await getAuthToken(req, account);
+
+    // if token is expired get new one, else just return token
+    if (token.expired()) 
+        return await refreshToken(req, token)
+    return token;
+}
 
 export default function()
 {
@@ -76,31 +132,22 @@ export default function()
 
     // the end of the song suggest flow. This should enqueue the song into the connected queue
     app.get('/suggest', async (req, res) => {
-        const uri       = req.query.uri;
-        const suggestTo = req.query.suggestTo;
+        const uri       = req.query.uri as string;
+        const suggestTo = req.query.suggestTo as string;
         
         if (!uri)
             throw new InvalidRequestError(`Missing suggestion uri`);
         if (!suggestTo)
             throw new InvalidRequestError(`Missing id to suggest to`);
 
-        const account = await Account.read(suggestTo as any);
-        if (!account)
-            throw new InvalidRequestError(`Invalid account id`);
+        // get the currently active auth token for the given profile
+        const account     = await getAccount(req, suggestTo);
 
-        // get currently active profile on account
-        const profile = await Profile.readActiveProfile(account.id);
-        if (!profile)
-            throw new InvalidRequestError(`No Active Profile is set account.`);
-
-        // get auth token from profile
-        const tokens = await SpotifyAccessToken.readProfile(profile.id);
-        if (tokens.length == 0)
-            throw new InvalidRequestError('Active Profile is not linked');
+        const accessToken = await getAuthTokenOrRefresh(req, account);
 
         // build request
         const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
-        const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, tokens[0].access_token)
+        const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, accessToken.access_token)
         
         // try and parse error data
         let data;

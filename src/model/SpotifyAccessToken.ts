@@ -1,6 +1,7 @@
 import { escape, Query }    from "mysql"
 import queryAsync           from "../util/queryAsync"
 import sqlSetString         from "../util/sqlSetString"
+import Env from "../env"
 
 export default class SpotifyAccessToken
 {
@@ -34,6 +35,12 @@ export default class SpotifyAccessToken
         for (let token of data)
             arr.push(Object.assign(new SpotifyAccessToken(), token))
         return arr;
+    }
+
+    // if a given token is expired
+    expired(): boolean {
+        const expires_in = parseInt(this.expires_in);
+        return (this.generatedAt + expires_in*1000) <= Date.now()
     }
 
     // create object in the db
