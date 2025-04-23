@@ -5,13 +5,10 @@
 </div>
 
 <div class="tableProfile">
-    <div class="rowProfile">
-        <% // render partial for each profile %>
-        <% for(let profile of profiles) { %>
-            <%- include('./partial', { profile: profile }) %>
-        <% } %>
-    </div>
-    
+    <% // render partial for each profile %>
+    <% for(let profile of profiles) { %>
+        <%- include('./partial', { profile: profile }) %>
+    <% } %>
 </div>
 
 

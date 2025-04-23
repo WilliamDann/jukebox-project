@@ -4,21 +4,7 @@
 
 .tableProfile{
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    padding-left: 50px;
-    padding-right: 50px;
-    padding-bottom: 50px;
-    height: fit-content;
-}
-
-.rowProfile{
-    display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    padding-left: 20%;
-    padding-right: 20%;
     justify-content: center;
 }
 
@@ -27,7 +13,7 @@
     padding: 10px;
     height:fit-content;
     width: 200px;
-    background-color: bisque;
+    background-color: rgb(180, 204, 190);
     text-align: center;
     margin: 20px;
 }
