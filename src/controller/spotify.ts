@@ -10,6 +10,7 @@ import SpotifyAccessToken   from "../model/SpotifyAccessToken";
 import { getAccount, getAuthedAccount } from "./account";
 import { getProfile }       from "./profile";
 import querystring          from 'querystring'
+import { SpotifyRequest } from "../integration/spotifyRequest";
 
 
 // helper function to update auth spotify token (the 3rd one) 
@@ -34,24 +35,21 @@ export async function refreshToken(req: Request, token ?: SpotifyAccessToken): P
         token = await getAuthToken(req);
 
     // send request to generate new token and parse result
-    const result = JSON.parse(await Env.getInstance().spotify.request(
-        {
+    const result = JSON.parse(await new SpotifyRequest()
+        .Hostname('accounts.spotify.com')
+        .AuthMode('basic')
+        .FormData({
             grant_type      : 'refresh_token',
             refresh_token   : token.refresh_token,
             client_id       : Env.getInstance().spotify.config.client_id
-        },
-        '/api/token',
-        'accounts.spotify.com',
-        'POST',
-        null,
-        false
-    ));
+        })
+        .Endpoint('/api/token')
+        .Method('POST')
+        .Request())
 
     // check for access token
     if (!result || !result.access_token)
         throw new SpotifyError("Failed to use refresh token: " + JSON.stringify(result));
-
-    console.log(result);
 
     // return new access token
     return Object.assign(new SpotifyAccessToken(), result);
@@ -89,14 +87,13 @@ export default function()
         {
             const spotToken = await SpotifyAccessToken.readProfile(profile.id);
             if (spotToken.length != 0) {
-                const data = await Env.getInstance().spotify.request(
-                    {},
-                    '/v1/me/player/queue',
-                    'api.spotify.com',
-                    'get',
-                    null,
-                    spotToken[0].access_token
-                );
+                const data = await new SpotifyRequest()
+                    .Endpoint('/v1/me/player/queue')
+                    .Method('GET')
+                    .AuthMode('user')
+                    .Token(spotToken[0].access_token)
+                    .Request()
+
                 playing = JSON.parse(data).currently_playing;
             }
         }
@@ -119,13 +116,17 @@ export default function()
 
 
         // send request
-        let data: any = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'GET', null, true);
+        let data = JSON.parse(await new SpotifyRequest()
+            .Endpoint(url)
+            .Method('GET')
+            .AuthMode('token')
+            .Request())
+
         if (!data)
         {
             Env.getInstance().logger.error(data);
             throw new AppError("Spotify Error", "Invalid data returned from search");
         }
-        data = JSON.parse(data);
 
         res.render('suggest/results', { suggestTo: suggestTo, items: data.tracks.items })
     });
@@ -147,8 +148,13 @@ export default function()
 
         // build request
         const url    = '/v1/me/player/queue?' + querystring.encode({ uri: uri as string });
-        const result = await Env.getInstance().spotify.request({}, url, 'api.spotify.com', 'POST', null, accessToken.access_token)
-        
+        const result = await new SpotifyRequest()
+            .Endpoint(url)
+            .Method('POST')
+            .AuthMode('user')
+            .Token(accessToken.access_token)
+            .Request()
+
         // try and parse error data
         let data;
         try {
@@ -211,11 +217,16 @@ export default function()
         await profile.update();
 
         // request user access token
-        const data = await Env.getInstance().spotify.request({
-            code: profile.spotAuthToken,
-            grant_type: 'authorization_code',
-            redirect_uri: 'http://127.0.0.1:8080/callback',
-        }, '/api/token', 'accounts.spotify.com', 'POST');
+        const data = await new SpotifyRequest()
+            .Endpoint('/api/token')
+            .Hostname('accounts.spotify.com')
+            .Method('POST')
+            .FormData({
+                code: profile.spotAuthToken,
+                grant_type: 'authorization_code',
+                redirect_uri: 'http://127.0.0.1:8080/callback',
+                })
+            .Request();
 
         // spot token data
         const token = Object.assign(new SpotifyAccessToken(), JSON.parse(data) as object);
