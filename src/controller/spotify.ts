@@ -11,6 +11,7 @@ import { getAccount, getAuthedAccount } from "./account";
 import { getProfile }       from "./profile";
 import querystring          from 'querystring'
 import { SpotifyRequest } from "../integration/spotifyRequest";
+import { log } from "../util/log";
 
 
 // helper function to update auth spotify token (the 3rd one) 
@@ -64,6 +65,7 @@ export async function getAuthTokenOrRefresh(req: Request, account ?: Account): P
     // if token is expired get new one, else just return token
     if (token.expired()) 
         return await refreshToken(req, token)
+
     return token;
 }
 
@@ -85,16 +87,19 @@ export default function()
         let playing     = {};
         if (profile)
         {
-            const spotToken = await SpotifyAccessToken.readProfile(profile.id);
-            if (spotToken.length != 0) {
+            const token = await getAuthTokenOrRefresh(req, account);
+            if (token) {
                 const data = await new SpotifyRequest()
                     .Endpoint('/v1/me/player/queue')
                     .Method('GET')
                     .AuthMode('user')
-                    .Token(spotToken[0].access_token)
+                    .Token(token.access_token)
                     .Request()
-
+                
+                    
                 playing = JSON.parse(data).currently_playing;
+                log('info', 'data: ' + data)
+                log('info', 'playing: ' + playing)
             }
         }
 
