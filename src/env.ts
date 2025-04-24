@@ -1,7 +1,7 @@
 import { Application }    from 'express'
 import { Connection  }    from 'mysql'
 import { Logger }         from 'winston';
-import SpotifyIntegration from './integration/spotify';
+import SpotifyClient from './integration/spotifyClient';
 
 // singelton instance for applicaiton enviroment
 //  this contains the express app, logger, etc.
@@ -22,7 +22,7 @@ export default class Env {
     public logger   !: Logger
 
     // spotify Integration
-    public spotify  !: SpotifyIntegration
+    public spotify  !: SpotifyClient
 
     // inaccessable outside the class
     private constructor() { }
