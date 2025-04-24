@@ -121,12 +121,12 @@ export class SpotifyRequest
                 console.log(res.statusCode)
               
                 res.on("data", function (chunk) {
-                    log('info', 'Spotify Request: Chunk recieved')
+                    log('info', 'Spotify Response: Chunk recieved')
                     chunks.push(chunk);
                 });
               
                 res.on("end", function () {
-                    log('info', 'Spotify Request: Message Complete')
+                    log('info', 'Spotify Response: Message Complete')
                     resolve(Buffer.concat(chunks).toString())
                 });
         
