@@ -98,8 +98,6 @@ export default function()
                 
                     
                 playing = JSON.parse(data).currently_playing;
-                log('info', 'data: ' + data)
-                log('info', 'playing: ' + playing)
             }
         }
 
