@@ -1,9 +1,10 @@
-import { Connection } from "mysql";
-import app from "./app";
-import db from "./db";
-import Env from "./env";
-import SpotifyIntegration from "./integration/spotify";
-import logger from "./logger";
+import { Connection }   from "mysql";
+import app              from "./app";
+import db               from "./db";
+import Env              from "./env";
+import SpotifyClient    from "./integration/spotifyClient";
+import logger           from "./logger";
+import { readFileSync } from "fs"
 
 function wait(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -55,24 +56,11 @@ export default async function() {
         
     // load spotify
     Env.getInstance().logger.info("Starting spotify connection...")
-    let spot = new SpotifyIntegration();
-    Env.getInstance().spotify = spot;
-    
-    if (!await retryUntil(
-        async () => {
-            Env.getInstance().logger.info("trying to connect to spotify...")  
-            Env.getInstance().spotify.init()
-        },
-        (): boolean => {
-            if (Env.getInstance().db == null) {
-                Env.getInstance().logger.error("Failed to load spotify access token, retrying...");
-            }
-            return Env.getInstance().spotify.token != null
-        }
-    , retry)) {
-        Env.getInstance().logger.error("Failed to get spotify access token")
-        throw new Error(`Failed to load spotify ${retry} tries.`);
-    }
+    Env.getInstance().spotify = new SpotifyClient();
+    Env.getInstance().spotify.config = JSON.parse(readFileSync('config.json').toString()).spotify;
+
+    if (!Env.getInstance().spotify.config.client_id)
+        Env.getInstance().logger.error("X Failed to load spotify");
 
     // loaded
     Env.getInstance().logger.info("Spotify Connected");
