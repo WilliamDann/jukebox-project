@@ -1,15 +1,9 @@
 <%- include('../base/top') %>
 
-<style>
-    div {
-        background-color: rgba(255, 255, 255, 0.8);
-        padding: 25px;
-        margin: 25px;
-    }
-</style>
-
+<div class="results">
 <% for (let item of items) { %>
     <%- include('./partial', { suggestTo: suggestTo, item: item }); %>
 <% } %>
+</div>
 
 <%- include('../base/bottom') %>
