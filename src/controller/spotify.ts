@@ -131,7 +131,14 @@ export default function()
             throw new AppError("Spotify Error", "Invalid data returned from search");
         }
 
-        res.render('suggest/results', { suggestTo: suggestTo, items: data.tracks.items })
+        // res.render('suggest/results', { suggestTo: suggestTo, items: data.tracks.items })
+        
+        res.render('suggest/results', { suggestTo: suggestTo, items: data.tracks.items }, (err, html) => {
+            if (err){
+                return res.status(500).send('Error rendering results');
+            }
+            res.send(html); // Send rendered HTML back to client
+          });
     });
 
     // the end of the song suggest flow. This should enqueue the song into the connected queue
