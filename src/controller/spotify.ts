@@ -224,6 +224,7 @@ export default function()
             .Endpoint('/api/token')
             .Hostname('accounts.spotify.com')
             .Method('POST')
+            .AuthMode('basic')
             .FormData({
                 code: profile.spotAuthToken,
                 grant_type: 'authorization_code',

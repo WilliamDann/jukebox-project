@@ -127,6 +127,7 @@ export class SpotifyRequest
               
                 res.on("end", function () {
                     log('info', 'Spotify Response: Message Complete')
+                    log('info', 'Spotify Response:' + Buffer.concat(chunks).toString())
                     resolve(Buffer.concat(chunks).toString())
                 });
         
