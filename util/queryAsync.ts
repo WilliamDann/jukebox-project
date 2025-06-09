@@ -7,7 +7,7 @@ export default function(query: string): Promise<any>
         Env.getInstance().logger.info("DB Query: " + query);
         conn.query(query, (err, result) => {
             if (err) reject(err);
-            else     resolve(result);
+            else     resolve(result.rows);
         });
     });
 }
