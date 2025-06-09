@@ -37,6 +37,7 @@ export default class Account {
     static async read(id: number): Promise<Account|null>
     {
         const result = await queryAsync(`select * from accounts where id=${escape(id)}`);
+        console.log(result)
         if (!result || result.length == 0) {
             return null
         }
