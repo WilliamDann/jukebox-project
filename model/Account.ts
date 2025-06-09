@@ -48,6 +48,7 @@ export default class Account {
     static async readEmail(email: string): Promise<Account|null>
     {
         const result = await queryAsync(`select * from accounts where email=${escape(email)}`);
+        console.log(result)
         if (!result || result.length == 0) {
             return null;
         }
