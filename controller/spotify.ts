@@ -188,7 +188,7 @@ export default function()
             response_type: 'code',
             client_id: Env.getInstance().spotify.config.client_id,
             scope: scope,
-            redirect_uri: 'http://127.0.0.1:8080/callback',
+            redirect_uri: process.env.SPOT_CALL,
             state: `${account.id},${profile.id}`,
             show_dialog: true
         })
@@ -228,7 +228,7 @@ export default function()
             .FormData({
                 code: profile.spotauthtoken,
                 grant_type: 'authorization_code',
-                redirect_uri: 'http://127.0.0.1:8080/callback',
+                redirect_uri: process.env.SPOT_CALLL,
                 })
             .Request();
 
