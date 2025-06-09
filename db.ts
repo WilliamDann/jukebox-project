@@ -6,9 +6,7 @@ export default function(): Promise<Client|null>
 {
     return new Promise((resolve, reject) => {
         // read the script to create the DB
-        const initScript = `create schema if not exists jukeboxdb;
-            use jukeboxdb;
-
+        const initScript = `
             -- table storing user accounts
             create table if not exists accounts (
                 id           int          unique not null auto_increment,
