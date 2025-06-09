@@ -1,4 +1,3 @@
-import mysql, { Connection }    from 'mysql';
 import {Client}                 from 'pg'
 import {readFileSync}           from 'fs';
 

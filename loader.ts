@@ -1,5 +1,4 @@
 import { Client }       from "pg";
-import app              from "./app";
 import db               from "./db";
 import Env              from "./env";
 import SpotifyClient    from "./integration/spotifyClient";
