@@ -1,7 +1,7 @@
 import express, { Application } from 'express'
 import bodyParser               from 'body-parser';
 import cookieParser             from 'cookie-parser';
-import { log } from './util/log';
+import { log }                  from './util/log';
 
 // init the express app
 export default function(): Application {
