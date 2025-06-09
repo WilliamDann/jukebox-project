@@ -141,6 +141,7 @@ export class SpotifyRequest
             log('info', this.toString())
 
             // send request
+            console.log(this.Payload())
             req.write(this.Payload());
             req.end();
         })

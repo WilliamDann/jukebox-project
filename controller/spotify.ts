@@ -230,12 +230,13 @@ export default function()
             .FormData({
                 code: profile.spotauthtoken,
                 grant_type: 'authorization_code',
-                redirect_uri: process.env.SPOT_CALLL,
+                redirect_uri: process.env.SPOT_CALL,
                 })
             .Request();
 
         // spot token data
         const token = Object.assign(new SpotifyAccessToken(), JSON.parse(data) as object);
+        console.log(token)
         if (token.access_token == null) {
             return res.render('base/error', { error: "failed to complete spotify auth flow - no access token" });
         }

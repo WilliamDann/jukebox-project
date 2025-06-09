@@ -34,7 +34,7 @@ export default function(): Promise<Client|null>
             displayName varchar(255) not null,
             accountId int not null references accounts(id),
             active boolean not null default false,
-            spotAuthToken varchar(255)
+            spotAuthToken varchar(999)
         );
 
         -- a spotify access token is what allows us to take actions on a user's behalf
