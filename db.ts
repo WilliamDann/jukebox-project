@@ -40,10 +40,10 @@ export default function(): Promise<Client|null>
         -- a spotify access token is what allows us to take actions on a user's behalf
         -- they are generated when we need them and expire after some time
         create table if not exists spotifyAccessTokens (
-            access_token varchar(255) primary key,
-            refresh_token varchar(255) not null,
+            access_token varchar(999) primary key,
+            refresh_token varchar(999) not null,
             expires_in int not null,
-            scope varchar(255) not null,
+            scope varchar(999) not null,
             profileId int not null references profiles(id),
             generatedAt bigint not null
         );
