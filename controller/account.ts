@@ -44,7 +44,7 @@ export async function getAuthedAccount(req: Request): Promise<Account>
     if (!accessToken)
         throw new AuthError();
 
-    const user = await Account.read(accessToken.accountId);
+    const user = await Account.read(accessToken.accountid);
     if (!user)
         throw new AuthError();
 
@@ -115,8 +115,8 @@ export default function() {
         // create account object
         const account        = new Account();
         account.email        = req.body.email;
-        account.displayName  = req.body.displayName;
-        account.passwordHash = Account.hashPassword(req.body.password);
+        account.displayname  = req.body.displayName;
+        account.passwordhash = Account.hashPassword(req.body.password);
 
         // check if account already exists
         if (await Account.emailExists(account.email))
@@ -145,7 +145,7 @@ export default function() {
         const account        = new Account();
         account.id           = req.body.id as any;
         account.email        = req.body.email;
-        account.displayName  = req.body.displayName;
+        account.displayname  = req.body.displayName;
 
         // update in db
         await account.update();

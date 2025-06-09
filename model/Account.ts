@@ -4,12 +4,13 @@ import { genSaltSync, hashSync, compareSync }   from "bcrypt"
 import sqlSetString                             from "../util/sqlSetString"
 import AccessToken                              from "./AccessToken"
 import Profile                                  from "./Profile"
+import { info } from "../util/log"
 
 export default class Account {
     id           !: number
     email        !: string
-    displayName  !: string
-    passwordHash !: string
+    displayname  !: string
+    passwordhash !: string
 
     constructor() { }
 
@@ -18,7 +19,9 @@ export default class Account {
     }
 
     checkPassword(plainText: string): boolean {
-        return compareSync(plainText, this.passwordHash);
+        info(plainText)
+        info(this.passwordhash)
+        return compareSync(plainText, this.passwordhash);
     }
 
     // if a given user id exists in the db
@@ -37,7 +40,6 @@ export default class Account {
     static async read(id: number): Promise<Account|null>
     {
         const result = await queryAsync(`select * from accounts where id=${escape(id)}`);
-        console.log(result)
         if (!result || result.length == 0) {
             return null
         }
@@ -48,7 +50,8 @@ export default class Account {
     static async readEmail(email: string): Promise<Account|null>
     {
         const result = await queryAsync(`select * from accounts where email=${escape(email)}`);
-        console.log(result)
+        info(result)
+        info(JSON.stringify(Object.assign(new Account(), result[0])))
         if (!result || result.length == 0) {
             return null;
         }
@@ -63,8 +66,8 @@ export default class Account {
                 accounts(email, displayName, passwordHash)
                 values(
                     ${escape(this.email)},
-                    ${escape(this.displayName)},
-                    ${escape(this.passwordHash)}
+                    ${escape(this.displayname)},
+                    ${escape(this.passwordhash)}
                 );
             `)
         return result;

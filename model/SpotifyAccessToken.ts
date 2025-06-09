@@ -10,8 +10,8 @@ export default class SpotifyAccessToken
     expires_in      !: string
     scope           !: string
 
-    profileId       !: number
-    generatedAt     !: number
+    profileid       !: number
+    generatedat     !: number
 
     // get object from the db
     static async read(accessToken: string): Promise<SpotifyAccessToken|null> {
@@ -40,7 +40,7 @@ export default class SpotifyAccessToken
     // if a given token is expired
     expired(): boolean {
         const expires_in = parseInt(this.expires_in);
-        return (this.generatedAt + expires_in*1000) <= Date.now()
+        return (this.generatedat + expires_in*1000) <= Date.now()
     }
 
     // create object in the db
@@ -54,8 +54,8 @@ export default class SpotifyAccessToken
                     ${escape(this.refresh_token)},
                     ${escape(this.expires_in)},
                     ${escape(this.scope)},
-                    ${escape(this.profileId)},
-                    ${escape(this.generatedAt)}
+                    ${escape(this.profileid)},
+                    ${escape(this.generatedat)}
                 );
             `)
         return data;

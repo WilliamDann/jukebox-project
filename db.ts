@@ -52,12 +52,21 @@ export default function(): Promise<Client|null>
         // connect to local mysql database
         //  for development this is fine but when the app is released
         //  we will need a real db
-        const client = new Client({
-            connectionString: process.env.DATABASE_URL,
-            ssl: {
-                rejectUnauthorized: false
-            }
-        });
+        let client;
+        if (process.env.DATABASE_URL) {
+            client = new Client({
+                connectionString: process.env.DATABASE_URL,
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            });
+        } else {
+            client = new Client({
+                connectionString: "postgresql://postgres:root@localhost:5432/postgres",
+                ssl: false
+            });
+        }
+
         
         // connect to the mysql db
         client.connect(err => {

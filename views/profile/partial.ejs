@@ -1,5 +1,5 @@
 <div class="profile">
-    <h2><%= profile.displayName %></h2>
+    <h2><%= profile.displayname %></h2>
     <p>Account Id: <%= profile.accountId %></p>
     
     <% if (!profile.spotAuthToken) { %>
@@ -10,7 +10,7 @@
     <br>
 
     <p>Status: 
-        <% if ( profile.active === 0 ) { %>
+        <% if ( profile.active == false ) { %>
             <a class="" href="/profile/setActive?profileId=<%= profile.id %>"><b>Activate</b></a>
         <% } else { %>
             <a class="" href="/profile/setInactive?profileId=<%= profile.id %>"><b>Deactivate</b></a>

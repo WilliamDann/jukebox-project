@@ -40,10 +40,10 @@ export default function()
         const account = await getAuthedAccount(req);
         const profile = await getProfile(req);
 
-        if (profile.accountId != account.id)
+        if (profile.accountid != account.id)
             throw new PermissionError();
 
-        if (!profile.spotAuthToken)
+        if (!profile.spotauthtoken)
             throw new AppError("Connection Error", "To set your profile to active you first have to connect the account.")
 
         // deactivate others
@@ -65,7 +65,7 @@ export default function()
         const account = await getAuthedAccount(req);
         const profile = await getProfile(req);
 
-        if (profile.accountId != account.id)
+        if (profile.accountid != account.id)
             throw new PermissionError();
 
         // set profile ot inactive
@@ -117,8 +117,8 @@ export default function()
         
         // create object in DB
         const profile = new Profile();
-        profile.accountId   = req.body.accountId;
-        profile.displayName = req.body.displayName;
+        profile.accountid   = req.body.accountId;
+        profile.displayname = req.body.displayName;
         profile.active      = false;
         
         await profile.create();
@@ -133,7 +133,7 @@ export default function()
         const profile = await getProfile(req);
 
         // check permissions
-        if (account.id != profile.accountId)
+        if (account.id != profile.accountid)
             throw new PermissionError();
 
         // copy changed data
@@ -154,7 +154,7 @@ export default function()
         const profile = await getProfile(req);
 
         // check permissions
-        if (account.id != profile.accountId)
+        if (account.id != profile.accountid)
             throw new PermissionError();
 
         // delete the account

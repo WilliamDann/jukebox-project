@@ -179,7 +179,7 @@ export default function()
         const profile = await getProfile(req);
 
         // if the user can preform the action
-        if (account.id != profile.accountId)
+        if (account.id != profile.accountid)
             throw new PermissionError();
 
         // build request info
@@ -216,7 +216,7 @@ export default function()
 
 
         // add auth code to profile
-        profile.spotAuthToken = code;
+        profile.spotauthtoken = code;
         await profile.update();
 
         // request user access token
@@ -226,7 +226,7 @@ export default function()
             .Method('POST')
             .AuthMode('basic')
             .FormData({
-                code: profile.spotAuthToken,
+                code: profile.spotauthtoken,
                 grant_type: 'authorization_code',
                 redirect_uri: 'http://127.0.0.1:8080/callback',
                 })
@@ -239,8 +239,8 @@ export default function()
         }
 
         // create computed data for token
-        token.profileId   = profile.id;
-        token.generatedAt = Date.now();
+        token.profileid   = profile.id;
+        token.generatedat = Date.now();
 
         // create the token on the sever
         await token.create();

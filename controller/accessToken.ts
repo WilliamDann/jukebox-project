@@ -32,13 +32,13 @@ export default function()
 
         // generate a new token
         let token = new AccessToken();
-        token.accessToken = AccessToken.generateToken();
-        token.accountId   = user.id;
+        token.accesstoken = AccessToken.generateToken();
+        token.accountid   = user.id;
 
         await token.create();
 
         // set cookie on user device
-        res.cookie('accessToken', token.accessToken);
+        res.cookie('accessToken', token.accesstoken);
 
         // show user their account page
         res.redirect('/account/read?id='+user.id);

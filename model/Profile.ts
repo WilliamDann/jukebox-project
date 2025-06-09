@@ -7,10 +7,10 @@ import Env from "../env"
 export default class Profile
 {
     id              !: number
-    displayName     !: string
-    accountId       !: number
+    displayname     !: string
+    accountid       !: number
     active          !: boolean
-    spotAuthToken   !: string
+    spotauthtoken   !: string
 
     // get a profile by it's id
     static async read(id: number): Promise<Profile|null>
@@ -51,7 +51,7 @@ export default class Profile
         const results = await queryAsync(`
             insert into
                 profiles(displayName, accountId, active)
-                values(${escape(this.displayName)}, ${escape(this.accountId)}, ${this.active})
+                values(${escape(this.displayname)}, ${escape(this.accountid)}, ${this.active})
             `)
         return results;
     }

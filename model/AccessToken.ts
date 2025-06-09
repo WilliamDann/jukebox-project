@@ -4,8 +4,8 @@ import Account              from "./Account";
 
 export default class AccessToken
 {
-    accessToken  !: string
-    accountId    !: number
+    accesstoken  !: string
+    accountid    !: number
 
     // generate a random token
     static generateToken(): string {
@@ -38,14 +38,14 @@ export default class AccessToken
         const response = await queryAsync(`
             insert into
                 accessTokens(accessToken, accountId)
-                values( ${escape(this.accessToken)}, ${escape(this.accountId)} );
+                values( ${escape(this.accesstoken)}, ${escape(this.accountid)} );
              `);
         return response;
     }
 
     async delete(): Promise<Query>
     {
-        const result = await queryAsync(`delete from accessTokens where accessToken=${escape(this.accessToken)}`);
+        const result = await queryAsync(`delete from accessTokens where accessToken=${escape(this.accesstoken)}`);
         return result;
     }
 }

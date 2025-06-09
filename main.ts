@@ -1,11 +1,14 @@
 import Env         from "./env";
 import controllers from './controller/all'
 import errors      from "./errors";
-import app from "./app";
-import loader from "./loader";
+import app          from "./app";
+import loader       from "./loader";
+import dotenv       from 'dotenv';
 
-const host = process.env.HOST;
-const port = process.env.PORT;
+dotenv.config();
+
+const host = process.env.HOST ? process.env.HOST : 'localhost';
+const port = process.env.PORT ? process.env.PORT : 8080;
 
 console.log(process.cwd());
 
