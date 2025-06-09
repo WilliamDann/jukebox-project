@@ -182,6 +182,8 @@ export default function()
         if (account.id != profile.accountid)
             throw new PermissionError();
 
+        console.log(process.env.SPOT_CALL)
+
         // build request info
         const scope = 'user-read-playback-state user-modify-playback-state';
         const qs    = querystring.stringify({
