@@ -7,6 +7,8 @@ import loader from "./loader";
 const host = process.env.HOST;
 const port = process.env.PORT;
 
+console.log(process.cwd());
+
 // init 
 Env.getInstance().app = app();
 
