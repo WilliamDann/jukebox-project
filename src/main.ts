@@ -4,8 +4,8 @@ import errors      from "./errors";
 import app from "./app";
 import loader from "./loader";
 
-const host = '0.0.0.0'
-const port = 8080
+const host = process.env.HOST;
+const port = process.env.PORT;
 
 // init 
 Env.getInstance().app = app();
@@ -22,7 +22,7 @@ Env.getInstance().app.use(errors)
 loader().then(() => {
     // start app
     Env.getInstance().logger.info(`Starting server on http://${host}:${port}`)
-    Env.getInstance().app.listen(port, host, () => {
+    Env.getInstance().app.listen(port, () => {
         console.log(`listening on http://${host}:${port}`)
         Env.getInstance().logger.info(`listening on http://${host}:${port}`)
     })
