@@ -56,7 +56,10 @@ export default async function() {
     // load spotify
     Env.getInstance().logger.info("Starting spotify connection...")
     Env.getInstance().spotify = new SpotifyClient();
-    Env.getInstance().spotify.config = JSON.parse(readFileSync('config.json').toString()).spotify;
+    Env.getInstance().spotify.config = {
+        client_id: process.env.SPOT_ID as any,
+        client_secret: process.env.SPOT_SEC as any
+    }
 
     if (!Env.getInstance().spotify.config.client_id)
         Env.getInstance().logger.error("X Failed to load spotify");
