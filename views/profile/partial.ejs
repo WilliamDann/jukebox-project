@@ -1,6 +1,6 @@
 <div class="profile">
     <h2><%= profile.displayname %></h2>
-    <p>Account Id: <%= profile.accountId %></p>
+    <p>Account Id: <%= profile.accountid %></p>
     
     <% if (!profile.spotAuthToken) { %>
         <a href="/profile/link?profileId=<%= profile.id %>" style="color: green; display: inline;">Link Spotify</a>
