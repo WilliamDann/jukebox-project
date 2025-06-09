@@ -13,6 +13,7 @@
     "mysql": "^2.18.1",
     "pg": "^8.16.0",
     "typescript": "^5.8.2",
+    "dotenv": "^16.5.0",
     "winston": "^3.17.0"
   },
   "devDependencies": {
