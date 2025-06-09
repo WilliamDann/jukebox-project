@@ -4,12 +4,14 @@
   "description": "",
   "main": "bin/main.js",
   "dependencies": {
+    "@types/pg": "^8.15.4",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
     "express": "^5.0.1",
     "mysql": "^2.18.1",
+    "pg": "^8.16.0",
     "typescript": "^5.8.2",
     "winston": "^3.17.0"
   },

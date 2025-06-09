@@ -1,4 +1,4 @@
-import { Connection }   from "mysql";
+import { Client }       from "pg";
 import app              from "./app";
 import db               from "./db";
 import Env              from "./env";
@@ -37,7 +37,7 @@ export default async function() {
     if (!await retryUntil(
         async () => {
             Env.getInstance().logger.info("trying to connect to DB...")  
-            Env.getInstance().db = await db() as Connection;
+            Env.getInstance().db = await db() as Client;
             // console.log(Env.getInstance().db)
         },
         (): boolean => {

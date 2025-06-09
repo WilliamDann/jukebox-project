@@ -2,6 +2,7 @@ import { Application }    from 'express'
 import { Connection  }    from 'mysql'
 import { Logger }         from 'winston';
 import SpotifyClient from './integration/spotifyClient';
+import {Client} from 'pg';
 
 // singelton instance for applicaiton enviroment
 //  this contains the express app, logger, etc.
@@ -16,7 +17,7 @@ export default class Env {
     // mysql database connection
 
     // mysql database connection
-    public db       !: Connection;
+    public db       !: Client;
 
     // logger instance
     public logger   !: Logger
