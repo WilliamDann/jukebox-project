@@ -1,24 +1,5 @@
-# starting the app
+# Jukebox App
 
-1. first install node.js.
-2. use npm to install dependances
-```
-npm i
-```
-1. install typescript
-```
-npm i -g typescript
-tsc --version
-```
+The purpose of the app is to allow coffeeshops (and other public spaces) to allow customers to suggest music. When the customer scans a QR Code, they are asked to search for their desired song, which is then inserted into the connected Spotify Queue.
 
-This should output a version number for typescript
-
-4. Install MySql
-You will need to install mysql.
-
-6. Build & Run the app
-```
-npm run start
-```
-
-It should then be running on http://localhost:8080
+Try it now: https://jb-app-91e27d952195.herokuapp.com/

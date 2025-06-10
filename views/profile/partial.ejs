@@ -1,0 +1,27 @@
+<div class="profile">
+    <h2><%= profile.displayname %></h2>
+    <p>Account Id: <%= profile.accountid %></p>
+    
+    <% if (!profile.spotAuthToken) { %>
+        <a href="/profile/link?profileId=<%= profile.id %>" style="color: green; display: inline;">Link Spotify</a>
+    <% } else { %>
+        <p style="display: inline;"><b>Spotify Linked</b></p>
+    <% } %>
+    <br>
+
+    <p>Status: 
+        <% if ( profile.active == false ) { %>
+            <a class="" href="/profile/setActive?profileId=<%= profile.id %>"><b>Activate</b></a>
+        <% } else { %>
+            <a class="" href="/profile/setInactive?profileId=<%= profile.id %>"><b>Deactivate</b></a>
+        <% } %>
+    </p>
+    <div class="row justify-content-center">
+        <a href="/profile/read?profileId=<%= profile.id %>">View</a>
+        <p>&nbsp | &nbsp</p>
+        <a  href="/profile/update?profileId=<%= profile.id %>">Update</a>
+        <p>&nbsp | &nbsp</p>
+        <a  href="/profile/delete?profileId=<%= profile.id %>">Delete</a>
+    </div>
+       
+</div>

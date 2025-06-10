@@ -1,0 +1,30 @@
+{
+  "name": "jukeboxproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/main.js",
+  "dependencies": {
+    "@types/pg": "^8.15.4",
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^5.0.1",
+    "mysql": "^2.18.1",
+    "pg": "^8.16.0",
+    "typescript": "^5.8.2",
+    "dotenv": "^16.5.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/mysql": "^2.15.26"
+  },
+  "scripts": {
+    "build": "echo Building... && tsc -p tsconfig.json",
+    "start": "npm run build && echo Running... && node bin/main.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

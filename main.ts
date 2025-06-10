@@ -1,0 +1,34 @@
+import Env         from "./env";
+import controllers from './controller/all'
+import errors      from "./errors";
+import app          from "./app";
+import loader       from "./loader";
+import dotenv       from 'dotenv';
+
+dotenv.config();
+
+const host = process.env.HOST ? process.env.HOST : 'localhost';
+const port = process.env.PORT ? process.env.PORT : 8080;
+
+console.log(process.cwd());
+
+// init 
+Env.getInstance().app = app();
+
+// register routes
+controllers()
+
+// use our custom error handling middleware
+//  for some reason this has to be used after controllers are imported
+//  not really sure why this is, but it will break if it's before!
+Env.getInstance().app.use(errors)
+
+// load components like DB and spotify, then start app
+loader().then(() => {
+    // start app
+    Env.getInstance().logger.info(`Starting server on http://${host}:${port}`)
+    Env.getInstance().app.listen(port, () => {
+        console.log(`listening on http://${host}:${port}`)
+        Env.getInstance().logger.info(`listening on http://${host}:${port}`)
+    })
+})
