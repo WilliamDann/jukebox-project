@@ -27,27 +27,8 @@ export default class SpotifyClient
         log('info', 'set client token: ' + data.access_token)
 
         this.token = Object.assign(new SpotifyAccessToken(), data);
-        return this.token;
-    }
+        this.token.generatedat = Date.now();
 
-    // refresh the token for this client
-    async refreshToken(): Promise<SpotifyAccessToken> 
-    {
-        const data = JSON.parse(await new SpotifyRequest()
-            .AuthMode('basic')
-            .Hostname('accounts.spotify.com')
-            .Endpoint('/api/token')
-            .Method('POST')
-            .FormData({
-                grant_type    : "refresh_token",
-                client_id     : this.config.client_id,
-                refresh_token : this.token.refresh_token
-            })
-            .Request());
-
-        log('info', 'set client token: ' + data.access_token)
-
-        this.token = Object.assign(new SpotifyAccessToken(), data);
         return this.token;
     }
 
@@ -59,9 +40,10 @@ export default class SpotifyClient
         if (!this.token)
             return await this.fetchToken();
 
-        // if the token we have is expired, get a new one via refresh
+        // if the token we have is expired, get a new one
+        //  this type of access token does not come with a refresh token
         if (this.token.expired())
-            return await this.refreshToken();
+            return await this.fetchToken();
 
         // else use the current token
         return this.token;

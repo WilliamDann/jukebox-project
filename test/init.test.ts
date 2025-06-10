@@ -1,10 +1,14 @@
 import { assert } from "console"
 import loader from "../loader"
+import dotenv from 'dotenv'
 import Env from "../env"
 
 // run before test suite is started because of the --delay flag
 //  https://mochajs.org/#root-level-hooks
 (async function() {
+    // load .env vars
+    dotenv.config()
+    
     // load app Env
     await loader();
 

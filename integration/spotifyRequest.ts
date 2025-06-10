@@ -118,7 +118,6 @@ export class SpotifyRequest
             // define callbacks
             const req = https.request(opts, function (res) {
                 const chunks: any[] = [];
-                console.log(res.statusCode)
               
                 res.on("data", function (chunk) {
                     log('info', 'Spotify Response: Chunk recieved')
@@ -141,7 +140,6 @@ export class SpotifyRequest
             log('info', this.toString())
 
             // send request
-            console.log(this.Payload())
             req.write(this.Payload());
             req.end();
         })
