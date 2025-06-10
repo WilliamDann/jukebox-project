@@ -2,7 +2,6 @@ import { escape, Query }    from "mysql"
 import queryAsync           from "../util/queryAsync"
 import sqlSetString         from "../util/sqlSetString"
 import SpotifyAccessToken   from "./SpotifyAccessToken"
-import Env from "../env"
 
 export default class Profile
 {

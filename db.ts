@@ -4,7 +4,7 @@ import {Client}                 from 'pg'
 export default function(): Promise<Client|null>
 {
     return new Promise((resolve, reject) => {
-        let client;
+        let client: Client;
         if (process.env.DATABASE_URL) {
             client = new Client({
                 connectionString: process.env.DATABASE_URL,
@@ -19,6 +19,8 @@ export default function(): Promise<Client|null>
             });
         }
 
+        // select correct db
+        client.query('set search_path to jukeboxdb;')
         
         // connect to the mysql db
         client.connect(err => {

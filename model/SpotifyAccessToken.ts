@@ -1,7 +1,6 @@
-import { escape, Query }    from "mysql"
+import { escapeLiteral }    from "pg"
 import queryAsync           from "../util/queryAsync"
-import sqlSetString         from "../util/sqlSetString"
-import Env from "../env"
+import sqlSetString from "../util/sqlSetString"
 
 export default class SpotifyAccessToken
 {
@@ -15,7 +14,7 @@ export default class SpotifyAccessToken
 
     // get object from the db
     static async read(accessToken: string): Promise<SpotifyAccessToken|null> {
-        const data = await queryAsync(`select * from spotifyAccessTokens where access_token=${escape(accessToken)}`);
+        const data = await queryAsync(`select * from spotifyAccessTokens where access_token=${escapeLiteral(accessToken)}`);
 
         if (!data || data.length == 0)
             return null;
@@ -26,7 +25,7 @@ export default class SpotifyAccessToken
     static async readProfile(profileId: number): Promise<SpotifyAccessToken[]>
     {
         // query data
-        const data = await queryAsync(`select * from spotifyAccessTokens where profileId=${escape(profileId)} order by generatedAt asc;`);
+        const data = await queryAsync(`select * from spotifyAccessTokens where profileId=${escapeLiteral(''+profileId)} order by generatedAt asc;`);
         if (!data || data.length == 0)
             return [];
 
@@ -44,34 +43,34 @@ export default class SpotifyAccessToken
     }
 
     // create object in the db
-    async create(): Promise<Query>
+    async create(): Promise<any>
     {
         const data = await queryAsync(`
             insert into
                 spotifyAccessTokens(access_token, refresh_token, expires_in, scope, profileId, generatedAt)
                 values(
-                    ${escape(this.access_token)},
-                    ${escape(this.refresh_token)},
-                    ${escape(this.expires_in)},
-                    ${escape(this.scope)},
-                    ${escape(this.profileid)},
-                    ${escape(this.generatedat)}
+                    ${escapeLiteral(this.access_token)},
+                    ${escapeLiteral(this.refresh_token)},
+                    ${escapeLiteral(this.expires_in)},
+                    ${escapeLiteral(this.scope)},
+                    ${escapeLiteral(''+this.profileid)},
+                    ${escapeLiteral(''+this.generatedat)}
                 );
             `)
         return data;
     }
 
     // update object in the db
-    async update(): Promise<Query>
+    async update(): Promise<any>
     {
-        const result = await queryAsync(`update spotifyAccessTokens ${sqlSetString(this)} where access_token=${escape(this.access_token)}`);
+        const result = await queryAsync(`update spotifyAccessTokens ${sqlSetString(this)} where access_token=${escapeLiteral(this.access_token)}`);
         return result;
     }
 
     // delete object in the db
-    async delete(): Promise<Query>
+    async delete(): Promise<any>
     {
-        const result = await queryAsync(`delete from spotifyAccessTokens where access_token=${escape(this.access_token)}`);
+        const result = await queryAsync(`delete from spotifyAccessTokens where access_token=${escapeLiteral(this.access_token)}`);
         return result;
     }
 }

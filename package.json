@@ -28,7 +28,7 @@
   "scripts": {
     "build": "echo Building... && tsc -p tsconfig.json",
     "start": "npm run build && echo Running... && node bin/main.js",
-    "test": "npm run build && echo Running Tests... && mocha"
+    "test": "npm run build && echo Running Tests... && mocha --delay"
   },
   "author": "",
   "license": "MIT"
