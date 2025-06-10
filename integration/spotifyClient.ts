@@ -1,5 +1,5 @@
 import SpotifyAccessToken from "../model/SpotifyAccessToken";
-import { log } from "../util/log";
+import { log }            from "../util/log";
 import SpotifyConfig      from "./spotifyConfig";
 import { SpotifyRequest } from './spotifyRequest';
 
