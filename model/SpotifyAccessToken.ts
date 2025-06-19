@@ -1,6 +1,7 @@
 import { escapeLiteral }    from "pg"
 import queryAsync           from "../util/queryAsync"
 import sqlSetString from "../util/sqlSetString"
+import { escape } from "mysql"
 
 export default class SpotifyAccessToken
 {
@@ -45,16 +46,17 @@ export default class SpotifyAccessToken
     // create object in the db
     async create(): Promise<any>
     {
+        console.log(this.expires_in)
         const data = await queryAsync(`
             insert into
                 spotifyAccessTokens(access_token, refresh_token, expires_in, scope, profileId, generatedAt)
                 values(
-                    ${escapeLiteral(this.access_token)},
-                    ${escapeLiteral(this.refresh_token)},
-                    ${escapeLiteral(this.expires_in)},
-                    ${escapeLiteral(this.scope)},
-                    ${escapeLiteral(''+this.profileid)},
-                    ${escapeLiteral(''+this.generatedat)}
+                    ${escape(this.access_token)},
+                    ${escape(this.refresh_token)},
+                    ${escape(this.expires_in)},
+                    ${escape(this.scope)},
+                    ${escape(''+this.profileid)},
+                    ${escape(''+this.generatedat)}
                 );
             `)
         return data;
